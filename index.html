@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Image Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 95vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* Контент */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        /* Поле ввода */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .prompt-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .prompt-input:focus {
+            border-color: #667eea;
+        }
+        
+        /* Кнопки */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        /* Карточки */
+        .card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        /* Изображение */
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .generated-image {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Загрузка */
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* История */
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .history-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .history-text {
+            flex: 1;
+        }
+        
+        .history-prompt {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .history-date {
+            font-size: 11px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🎨 AI Image Generator</h1>
+            <p>Создай любое изображение по тексту</p>
+        </div>
+        
+        <div class="content" id="content">
+            <!-- Главный экран -->
+            <div id="mainScreen">
+                <div class="input-group">
+                    <input type="text" id="promptInput" class="prompt-input" placeholder="Введите описание...">
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">⚙️ Настройки</div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: block; margin-bottom: 5px;">Модель:</label>
+                        <select id="modelSelect" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
+                            <option value="flux">Flux (быстрый)</option>
+                            <option value="turbo">Turbo (качественный)</option>
+                            <option value="anime">Аниме</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: block; margin-bottom: 5px;">Размер:</label>
+                        <select id="sizeSelect" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
+                            <option value="512">512x512</option>
+                            <option value="768">768x768</option>
+                            <option value="1024">1024x1024</option>
+                        </select>
+                    </div>
+                    
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="enhancePrompt" checked>
+                        <span>Улучшить промпт (AI-расширение)</span>
+                    </label>
+                </div>
+                
+                <button class="btn" onclick="generateImage()">🚀 Сгенерировать</button>
+                <button class="btn btn-secondary" onclick="showHistory()">📋 История</button>
+            </div>
+            
+            <!-- Экран генерации (скрыт) -->
+            <div id="generationScreen" style="display: none;">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Генерация изображения...</p>
+                    <p style="font-size: 12px; color: #999;" id="progressText">Это займет 10-20 секунд</p>
+                </div>
+            </div>
+            
+            <!-- Экран результата (скрыт) -->
+            <div id="resultScreen" style="display: none;">
+                <div class="image-container">
+                    <img id="resultImage" class="generated-image" src="" alt="Generated">
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" style="flex: 1;" onclick="saveImage()">💾 Сохранить</button>
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="shareImage()">📤 Поделиться</button>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="backToMain()">◀ Назад</button>
+            </div>
+            
+            <!-- Экран истории (скрыт) -->
+            <div id="historyScreen" style="display: none;">
+                <div style="margin-bottom: 15px;">
+                    <button class="btn btn-secondary" onclick="backToMain()">◀ Назад</button>
+                </div>
+                <div id="historyList"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Состояние приложения
+        let history = [];
+        
+        // Загрузка истории из localStorage
+        function loadHistory() {
+            const saved = localStorage.getItem('imageHistory');
+            if (saved) {
+                try {
+                    history = JSON.parse(saved);
+                } catch(e) {
+                    history = [];
+                }
+            }
+        }
+        
+        // Сохранение истории
+        function saveHistory() {
+            localStorage.setItem('imageHistory', JSON.stringify(history));
+        }
+        
+        // Показать главный экран
+        function backToMain() {
+            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('generationScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('historyScreen').style.display = 'none';
+        }
+        
+        // Показать историю
+        function showHistory() {
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('historyScreen').style.display = 'block';
+            
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; padding: 30px; color: #999;">История пуста</div>';
+                return;
+            }
+            
+            // Показываем последние 20 генераций
+            history.slice(0, 20).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.onclick = () => showHistoryImage(item);
+                div.innerHTML = `
+                    <img src="${item.imageUrl}" alt="thumb">
+                    <div class="history-text">
+                        <div class="history-prompt">${item.prompt.substring(0, 30)}${item.prompt.length > 30 ? '...' : ''}</div>
+                        <div class="history-date">${new Date(item.timestamp).toLocaleString()}</div>
+                    </div>
+                `;
+                historyList.appendChild(div);
+            });
+        }
+        
+        // Показать изображение из истории
+        function showHistoryImage(item) {
+            document.getElementById('resultImage').src = item.imageUrl;
+            document.getElementById('historyScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+        }
+        
+        // Генерация изображения
+        async function generateImage() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            if (!prompt) {
+                alert('Введите описание!');
+                return;
+            }
+            
+            const model = document.getElementById('modelSelect').value;
+            const size = document.getElementById('sizeSelect').value;
+            const enhance = document.getElementById('enhancePrompt').checked;
+            
+            // Показываем экран генерации
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('generationScreen').style.display = 'block';
+            
+            let finalPrompt = prompt;
+            
+            // Улучшение промпта (если включено)
+            if (enhance) {
+                document.getElementById('progressText').textContent = 'Улучшаем промпт...';
+                finalPrompt = await enhancePrompt(prompt);
+            }
+            
+            document.getElementById('progressText').textContent = 'Генерируем изображение...';
+            
+            try {
+                // Кодируем промпт
+                const encodedPrompt = encodeURIComponent(finalPrompt);
+                
+                // Формируем URL для Pollinations API [citation:2]
+                let url = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
+                url += `?width=${size}&height=${size}&nologo=true`;
+                
+                if (model === 'flux') url += '&model=flux';
+                if (model === 'anime') url += '&model=anime';
+                
+                // Получаем изображение
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                
+                // Сохраняем в историю
+                const historyItem = {
+                    prompt: prompt,
+                    enhancedPrompt: finalPrompt,
+                    model: model,
+                    size: size,
+                    imageUrl: imageUrl,
+                    timestamp: Date.now()
+                };
+                
+                history.unshift(historyItem);
+                saveHistory();
+                
+                // Показываем результат
+                document.getElementById('resultImage').src = imageUrl;
+                document.getElementById('generationScreen').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+                
+            } catch (error) {
+                alert('Ошибка генерации: ' + error.message);
+                backToMain();
+            }
+        }
+        
+        // Улучшение промпта (простая версия)
+        async function enhancePrompt(prompt) {
+            // Здесь можно добавить реальное улучшение через LLM
+            // Пока просто добавляем модификаторы
+            const modifiers = [
+                'highly detailed, 8k',
+                'professional photography',
+                'masterpiece, best quality'
+            ];
+            
+            return `${prompt}, ${modifiers.join(', ')}`;
+        }
+        
+        // Сохранение изображения
+        function saveImage() {
+            const img = document.getElementById('resultImage');
+            
+            // Создаем ссылку для скачивания
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = `ai-image-${Date.now()}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Поделиться изображением
+        function shareImage() {
+            const img = document.getElementById('resultImage');
+            
+            if (navigator.share) {
+                fetch(img.src)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+                        navigator.share({
+                            title: 'AI Generated Image',
+                            files: [file]
+                        });
+                    });
+            } else {
+                alert('Поделиться не поддерживается на этом устройстве');
+            }
+        }
+        
+        // Инициализация
+        window.onload = function() {
+            loadHistory();
+        };
+    </script>
+</body>
+</html>
