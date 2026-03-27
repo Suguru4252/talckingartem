@@ -16,58 +16,45 @@
         body {
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', 'Poppins', 'Comic Neue', system-ui, sans-serif;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            position: relative;
-        }
-
-        .game-container {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(15px);
-            border-radius: 70px;
-            padding: 20px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
         }
 
         .game-card {
-            max-width: 600px;
+            max-width: 550px;
             width: 100%;
             background: linear-gradient(145deg, #fff9f0, #fff0e0);
-            border-radius: 55px;
+            border-radius: 50px;
             overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
 
         .stats-bar {
             background: linear-gradient(135deg, #ff9966, #ff5e62);
-            padding: 18px 20px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
-            border-bottom: 3px solid rgba(255,255,255,0.5);
+            gap: 10px;
         }
 
         .stat {
             background: rgba(255,255,255,0.95);
-            border-radius: 50px;
-            padding: 6px 14px;
+            border-radius: 40px;
+            padding: 5px 12px;
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: bold;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 0.85rem;
         }
 
         .bar-container {
-            width: 70px;
-            height: 8px;
+            width: 60px;
+            height: 6px;
             background: #e0e0e0;
             border-radius: 10px;
             overflow: hidden;
@@ -76,96 +63,77 @@
         .bar-fill {
             height: 100%;
             transition: width 0.3s;
-            border-radius: 10px;
         }
 
         .character-area {
             background: linear-gradient(145deg, #a8edea, #fed6e3);
-            padding: 30px 20px;
+            padding: 25px 20px;
             text-align: center;
-            position: relative;
             cursor: pointer;
-            border-bottom: 4px solid #ffb347;
+            border-bottom: 3px solid #ffb347;
         }
 
-        #davidCanvas {
-            width: 280px;
-            height: 280px;
-            margin: 0 auto;
-            display: block;
-            filter: drop-shadow(12px 16px 20px rgba(0,0,0,0.25));
-            cursor: pointer;
+        #davidEmoji {
+            font-size: 150px;
+            filter: drop-shadow(8px 12px 12px rgba(0,0,0,0.2));
+            transition: transform 0.1s;
+            display: inline-block;
         }
 
         .speech-bubble {
             background: white;
-            border-radius: 35px;
-            padding: 14px 24px;
+            border-radius: 30px;
+            padding: 12px 20px;
             display: inline-block;
-            max-width: 90%;
-            margin: 20px auto 0;
-            font-size: 1.1rem;
+            margin-top: 15px;
+            font-size: 1rem;
             font-weight: 600;
             color: #5a3e2b;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border: 3px solid #ffb347;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #ffb347;
         }
 
         .action-panel {
-            padding: 20px;
-            background: linear-gradient(145deg, #fff5e8, #ffefdf);
+            padding: 15px;
+            background: #fff5e8;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            border-bottom: 2px solid #ffe0b5;
+            gap: 10px;
+            border-bottom: 1px solid #ffe0b5;
         }
 
         .action-btn {
             background: linear-gradient(135deg, #ffb347, #ff8c33);
             border: none;
-            padding: 12px 8px;
-            border-radius: 60px;
+            padding: 10px;
+            border-radius: 50px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             cursor: pointer;
             transition: all 0.2s;
             font-family: inherit;
-            box-shadow: 0 5px 0 #c16f1a;
+            box-shadow: 0 3px 0 #c16f1a;
         }
 
         .action-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #c16f1a;
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #c16f1a;
         }
 
         .action-btn span:first-child {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
         }
 
         .tabs {
             display: flex;
             background: #ffefdf;
-            padding: 0 20px;
+            padding: 0 15px;
             gap: 5px;
-            border-bottom: 2px solid #ffe0b5;
         }
 
         .tab {
@@ -177,22 +145,20 @@
             font-weight: bold;
             color: #a56b2f;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-radius: 20px 20px 0 0;
         }
 
         .tab.active {
             background: white;
             color: #ff8c33;
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.05);
         }
 
         .tab-content {
             display: none;
             padding: 20px;
             background: #fff5ea;
-            animation: fadeIn 0.3s;
+            min-height: 250px;
         }
 
         .tab-content.active {
@@ -201,200 +167,176 @@
 
         .game-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
         .feature-card {
-            background: linear-gradient(135deg, #fff, #fff5e8);
-            border-radius: 25px;
+            background: white;
+            border-radius: 20px;
             padding: 12px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             border: 2px solid #ffd89a;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-color: #ffb347;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .feature-card:active {
-            transform: translateY(0);
+            transform: scale(0.97);
+            background: #fff0e0;
         }
 
         .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
+            font-size: 2rem;
+            margin-bottom: 5px;
         }
 
         .feature-title {
             font-weight: bold;
             color: #8b5a2b;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .feature-cost {
             font-size: 0.7rem;
             color: #ff8c33;
-            margin-top: 5px;
+            margin-top: 3px;
         }
 
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #4caf50, #45a049);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease;
-            z-index: 1000;
-            font-size: 0.9rem;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .level-badge {
+        .bonus-btn {
             background: linear-gradient(135deg, #ffd700, #ffb347);
             border-radius: 30px;
-            padding: 8px 16px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            padding: 10px;
+            text-align: center;
             font-weight: bold;
             margin-top: 15px;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bonus-btn:active {
+            transform: scale(0.98);
         }
 
         footer {
             text-align: center;
             padding: 12px;
-            font-size: 0.7rem;
-            background: linear-gradient(145deg, #f7e5d2, #f5e0ca);
+            font-size: 0.65rem;
+            background: #f7e5d2;
             color: #7a5a3a;
         }
 
-        #petDisplay {
-            text-align: center;
-            margin-top: 15px;
-            padding: 10px;
-            background: #ffe0b5;
-            border-radius: 30px;
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        .tap-effect {
+            animation: bounce 0.2s ease;
         }
     </style>
 </head>
 <body>
-<div class="game-container">
-    <div class="game-card">
-        <div class="stats-bar">
-            <div class="stat"><span>🍔</span> <span id="hungerValue">100</span>%
-                <div class="bar-container"><div class="bar-fill" id="hungerFill" style="background:#4caf50; width:100%"></div></div>
-            </div>
-            <div class="stat"><span>😊</span> <span id="happyValue">100</span>%
-                <div class="bar-container"><div class="bar-fill" id="happyFill" style="background:#ff9800; width:100%"></div></div>
-            </div>
-            <div class="stat"><span>💤</span> <span id="energyValue">100</span>%
-                <div class="bar-container"><div class="bar-fill" id="energyFill" style="background:#9c27b0; width:100%"></div></div>
-            </div>
-            <div class="stat"><span>⭐</span> <span id="coins">100</span></div>
-            <div class="stat"><span>🎮</span> Ур. <span id="level">1</span></div>
+<div class="game-card">
+    <!-- Статистика -->
+    <div class="stats-bar">
+        <div class="stat"><span>🍔</span> <span id="hungerVal">100</span>%
+            <div class="bar-container"><div class="bar-fill" id="hungerBar" style="background:#4caf50; width:100%"></div></div>
         </div>
-
-        <div class="character-area" id="characterArea">
-            <canvas id="davidCanvas" width="280" height="280"></canvas>
-            <div id="speechText" class="speech-bubble">✨ Привет! Я Давид! ✨</div>
+        <div class="stat"><span>😊</span> <span id="happyVal">100</span>%
+            <div class="bar-container"><div class="bar-fill" id="happyBar" style="background:#ff9800; width:100%"></div></div>
         </div>
-
-        <div class="action-panel">
-            <button class="action-btn" id="feedBtn"><span>🍕</span> Покормить</button>
-            <button class="action-btn" id="playBtn"><span>⚽</span> Поиграть</button>
-            <button class="action-btn" id="sleepBtn"><span>😴</span> Спать</button>
-            <button class="action-btn" id="petBtn"><span>✋</span> Погладить</button>
+        <div class="stat"><span>💤</span> <span id="energyVal">100</span>%
+            <div class="bar-container"><div class="bar-fill" id="energyBar" style="background:#9c27b0; width:100%"></div></div>
         </div>
-
-        <div class="tabs">
-            <button class="tab active" data-tab="games">🎮 Игры</button>
-            <button class="tab" data-tab="shop">🛍️ Магазин</button>
-            <button class="tab" data-tab="pets">🐾 Питомец</button>
-            <button class="tab" data-tab="room">🏠 Комната</button>
-        </div>
-
-        <div class="tab-content active" id="games-tab">
-            <div class="game-grid">
-                <div class="feature-card" data-game="fish">
-                    <div class="feature-icon">🐟</div>
-                    <div class="feature-title">Рыбалка</div>
-                    <div class="feature-cost">+10-30⭐</div>
-                </div>
-                <div class="feature-card" data-game="exercise">
-                    <div class="feature-icon">🏃‍♂️</div>
-                    <div class="feature-title">Зарядка</div>
-                    <div class="feature-cost">+15💤</div>
-                </div>
-                <div class="feature-card" data-game="quiz">
-                    <div class="feature-icon">❓</div>
-                    <div class="feature-title">Викторина</div>
-                    <div class="feature-cost">+20⭐</div>
-                </div>
-                <div class="feature-card" data-game="memory">
-                    <div class="feature-icon">🧠</div>
-                    <div class="feature-title">Память</div>
-                    <div class="feature-cost">+25⭐</div>
-                </div>
-            </div>
-            <div class="level-badge" id="dailyBonus">
-                <span>🎁</span> Ежедневный бонус: ЗАБРАТЬ
-            </div>
-        </div>
-
-        <div class="tab-content" id="shop-tab">
-            <div class="game-grid">
-                <div class="feature-card" data-shop="pizza"><div class="feature-icon">🍕</div><div class="feature-title">Пицца</div><div class="feature-cost">20⭐ +40🍔</div></div>
-                <div class="feature-card" data-shop="toy"><div class="feature-icon">🧸</div><div class="feature-title">Игрушка</div><div class="feature-cost">30⭐ +35😊</div></div>
-                <div class="feature-card" data-shop="energy"><div class="feature-icon">⚡</div><div class="feature-title">Энергетик</div><div class="feature-cost">15⭐ +30💤</div></div>
-                <div class="feature-card" data-shop="cake"><div class="feature-icon">🎂</div><div class="feature-title">Торт</div><div class="feature-cost">50⭐ +60🍔</div></div>
-                <div class="feature-card" data-shop="hat"><div class="feature-icon">🧢</div><div class="feature-title">Шляпа</div><div class="feature-cost">100⭐</div></div>
-                <div class="feature-card" data-shop="scarf"><div class="feature-icon">🧣</div><div class="feature-title">Шарф</div><div class="feature-cost">80⭐</div></div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="pets-tab">
-            <div class="game-grid">
-                <div class="feature-card" data-pet="cat"><div class="feature-icon">🐱</div><div class="feature-title">Котенок</div><div class="feature-cost">150⭐</div></div>
-                <div class="feature-card" data-pet="dog"><div class="feature-icon">🐶</div><div class="feature-title">Щенок</div><div class="feature-cost">200⭐</div></div>
-                <div class="feature-card" data-pet="bird"><div class="feature-icon">🐦</div><div class="feature-title">Птичка</div><div class="feature-cost">100⭐</div></div>
-            </div>
-            <div id="petDisplay">🐾 Нет питомца. Купи друга!</div>
-        </div>
-
-        <div class="tab-content" id="room-tab">
-            <div class="game-grid">
-                <div class="feature-card" data-room="forest"><div class="feature-icon">🌳</div><div class="feature-title">Лес</div><div class="feature-cost">80⭐</div></div>
-                <div class="feature-card" data-room="beach"><div class="feature-icon">🌊</div><div class="feature-title">Пляж</div><div class="feature-cost">80⭐</div></div>
-                <div class="feature-card" data-room="night"><div class="feature-icon">🌙</div><div class="feature-title">Ночь</div><div class="feature-cost">80⭐</div></div>
-            </div>
-        </div>
-        <footer>✨ Нажми на Давида! Параметры снижаются каждые 25 секунд ✨</footer>
+        <div class="stat"><span>⭐</span> <span id="coinsVal">100</span></div>
+        <div class="stat"><span>🎮</span> Ур.<span id="levelVal">1</span></div>
     </div>
+
+    <!-- Персонаж -->
+    <div class="character-area" id="characterArea">
+        <div id="davidEmoji">👨‍🦰</div>
+        <div id="speechText" class="speech-bubble">✨ Привет! Я Давид! ✨</div>
+    </div>
+
+    <!-- Кнопки действий -->
+    <div class="action-panel">
+        <button class="action-btn" id="feedBtn"><span>🍕</span> Покормить</button>
+        <button class="action-btn" id="playBtn"><span>⚽</span> Поиграть</button>
+        <button class="action-btn" id="sleepBtn"><span>😴</span> Спать</button>
+        <button class="action-btn" id="petBtn"><span>✋</span> Погладить</button>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="tabs">
+        <button class="tab active" data-tab="games">🎮 Игры</button>
+        <button class="tab" data-tab="shop">🛍️ Магазин</button>
+        <button class="tab" data-tab="pets">🐾 Питомец</button>
+        <button class="tab" data-tab="room">🏠 Комната</button>
+    </div>
+
+    <!-- Игры -->
+    <div class="tab-content active" id="games-tab">
+        <div class="game-grid">
+            <div class="feature-card" onclick="playGame('fish')">
+                <div class="feature-icon">🐟</div>
+                <div class="feature-title">Рыбалка</div>
+                <div class="feature-cost">+10-30⭐</div>
+            </div>
+            <div class="feature-card" onclick="playGame('exercise')">
+                <div class="feature-icon">🏃‍♂️</div>
+                <div class="feature-title">Зарядка</div>
+                <div class="feature-cost">+15💤</div>
+            </div>
+            <div class="feature-card" onclick="playGame('quiz')">
+                <div class="feature-icon">❓</div>
+                <div class="feature-title">Викторина</div>
+                <div class="feature-cost">+20⭐</div>
+            </div>
+            <div class="feature-card" onclick="playGame('memory')">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-title">Память</div>
+                <div class="feature-cost">+25⭐</div>
+            </div>
+        </div>
+        <div class="bonus-btn" id="dailyBonus">🎁 Ежедневный бонус: ЗАБРАТЬ</div>
+    </div>
+
+    <!-- Магазин -->
+    <div class="tab-content" id="shop-tab">
+        <div class="game-grid">
+            <div class="feature-card" onclick="buyItem('pizza')"><div class="feature-icon">🍕</div><div class="feature-title">Пицца</div><div class="feature-cost">20⭐ +40🍔</div></div>
+            <div class="feature-card" onclick="buyItem('toy')"><div class="feature-icon">🧸</div><div class="feature-title">Игрушка</div><div class="feature-cost">30⭐ +35😊</div></div>
+            <div class="feature-card" onclick="buyItem('energy')"><div class="feature-icon">⚡</div><div class="feature-title">Энергетик</div><div class="feature-cost">15⭐ +30💤</div></div>
+            <div class="feature-card" onclick="buyItem('cake')"><div class="feature-icon">🎂</div><div class="feature-title">Торт</div><div class="feature-cost">50⭐ +60🍔</div></div>
+        </div>
+    </div>
+
+    <!-- Питомец -->
+    <div class="tab-content" id="pets-tab">
+        <div class="game-grid">
+            <div class="feature-card" onclick="buyPet('cat')"><div class="feature-icon">🐱</div><div class="feature-title">Котенок</div><div class="feature-cost">150⭐</div></div>
+            <div class="feature-card" onclick="buyPet('dog')"><div class="feature-icon">🐶</div><div class="feature-title">Щенок</div><div class="feature-cost">200⭐</div></div>
+            <div class="feature-card" onclick="buyPet('bird')"><div class="feature-icon">🐦</div><div class="feature-title">Птичка</div><div class="feature-cost">100⭐</div></div>
+        </div>
+        <div id="petDisplay" style="text-align:center; margin-top:15px; padding:10px; background:#ffe0b5; border-radius:20px;">🐾 Нет питомца</div>
+    </div>
+
+    <!-- Комната -->
+    <div class="tab-content" id="room-tab">
+        <div class="game-grid">
+            <div class="feature-card" onclick="changeRoom('forest')"><div class="feature-icon">🌳</div><div class="feature-title">Лес</div><div class="feature-cost">80⭐</div></div>
+            <div class="feature-card" onclick="changeRoom('beach')"><div class="feature-icon">🌊</div><div class="feature-title">Пляж</div><div class="feature-cost">80⭐</div></div>
+            <div class="feature-card" onclick="changeRoom('night')"><div class="feature-icon">🌙</div><div class="feature-title">Ночь</div><div class="feature-cost">80⭐</div></div>
+        </div>
+    </div>
+    <footer>✨ Нажми на Давида! Параметры снижаются каждые 25 сек ✨</footer>
 </div>
 
 <script>
-    // Игровые параметры
+    // ==================== ИГРОВЫЕ ПЕРЕМЕННЫЕ ====================
     let hunger = 100;
     let happiness = 100;
     let energy = 100;
@@ -402,48 +344,108 @@
     let level = 1;
     let exp = 0;
     
-    let pet = null;
-    let room = 'default';
-    let hat = false;
-    let scarf = false;
+    let hasPet = null;
+    let currentRoom = 'default';
     let lastDaily = Date.now();
     
-    // Получаем элементы
-    const canvas = document.getElementById('davidCanvas');
-    const ctx = canvas.getContext('2d');
+    // Эмодзи для разных настроений
+    const emojis = {
+        happy: '😊',
+        normal: '👨‍🦰',
+        sad: '😢',
+        sleepy: '😴',
+        hungry: '😫'
+    };
     
-    function showNotification(msg, isError = false) {
-        const notif = document.createElement('div');
-        notif.className = 'notification';
-        notif.style.background = isError ? 'linear-gradient(135deg, #f44336, #d32f2f)' : 'linear-gradient(135deg, #4caf50, #45a049)';
-        notif.textContent = msg;
-        document.body.appendChild(notif);
-        setTimeout(() => notif.remove(), 2500);
-    }
-    
-    function showSpeech(msg) {
-        const speechDiv = document.getElementById('speechText');
-        speechDiv.innerText = msg;
-        speechDiv.style.animation = 'none';
-        speechDiv.offsetHeight;
-        speechDiv.style.animation = 'fadeIn 0.3s ease';
-    }
-    
+    // ==================== ФУНКЦИИ ОБНОВЛЕНИЯ ====================
     function updateUI() {
+        // Ограничиваем значения
         hunger = Math.min(100, Math.max(0, hunger));
         happiness = Math.min(100, Math.max(0, happiness));
         energy = Math.min(100, Math.max(0, energy));
         
-        document.getElementById('hungerFill').style.width = hunger + '%';
-        document.getElementById('happyFill').style.width = happiness + '%';
-        document.getElementById('energyFill').style.width = energy + '%';
-        document.getElementById('hungerValue').innerText = Math.floor(hunger);
-        document.getElementById('happyValue').innerText = Math.floor(happiness);
-        document.getElementById('energyValue').innerText = Math.floor(energy);
-        document.getElementById('coins').innerText = coins;
-        document.getElementById('level').innerText = level;
+        // Обновляем полоски
+        document.getElementById('hungerBar').style.width = hunger + '%';
+        document.getElementById('happyBar').style.width = happiness + '%';
+        document.getElementById('energyBar').style.width = energy + '%';
         
-        drawDavid();
+        // Обновляем цифры
+        document.getElementById('hungerVal').innerText = Math.floor(hunger);
+        document.getElementById('happyVal').innerText = Math.floor(happiness);
+        document.getElementById('energyVal').innerText = Math.floor(energy);
+        document.getElementById('coinsVal').innerText = coins;
+        document.getElementById('levelVal').innerText = level;
+        
+        // Меняем эмодзи в зависимости от состояния
+        let emoji = document.getElementById('davidEmoji');
+        if (hunger < 20) {
+            emoji.innerHTML = '😫';
+        } else if (energy < 20) {
+            emoji.innerHTML = '😴';
+        } else if (happiness < 30) {
+            emoji.innerHTML = '😢';
+        } else if (happiness > 70) {
+            emoji.innerHTML = '😊';
+        } else {
+            emoji.innerHTML = '👨‍🦰';
+        }
+        
+        // Добавляем питомца к эмодзи если есть
+        if (hasPet === 'cat') emoji.innerHTML += ' 🐱';
+        else if (hasPet === 'dog') emoji.innerHTML += ' 🐶';
+        else if (hasPet === 'bird') emoji.innerHTML += ' 🐦';
+        
+        // Меняем фон в зависимости от комнаты
+        const charArea = document.querySelector('.character-area');
+        if (currentRoom === 'forest') {
+            charArea.style.background = "linear-gradient(145deg, #90EE90, #228B22)";
+        } else if (currentRoom === 'beach') {
+            charArea.style.background = "linear-gradient(145deg, #87CEEB, #F4A460)";
+        } else if (currentRoom === 'night') {
+            charArea.style.background = "linear-gradient(145deg, #191970, #483D8B)";
+        } else {
+            charArea.style.background = "linear-gradient(145deg, #a8edea, #fed6e3)";
+        }
+        
+        checkLevelUp();
+    }
+    
+    function showSpeech(text) {
+        const speechDiv = document.getElementById('speechText');
+        speechDiv.innerText = text;
+        speechDiv.style.animation = 'none';
+        speechDiv.offsetHeight;
+        speechDiv.style.animation = 'bounce 0.3s ease';
+        
+        // Автоматически возвращаем обычную фразу через 3 секунды
+        setTimeout(() => {
+            if (speechDiv.innerText === text) {
+                speechDiv.innerText = "✨ Привет! Я Давид! ✨";
+            }
+        }, 3000);
+    }
+    
+    function showNotification(text, isError = false) {
+        const notif = document.createElement('div');
+        notif.textContent = text;
+        notif.style.position = 'fixed';
+        notif.style.top = '20px';
+        notif.style.right = '20px';
+        notif.style.background = isError ? '#f44336' : '#4caf50';
+        notif.style.color = 'white';
+        notif.style.padding = '12px 20px';
+        notif.style.borderRadius = '50px';
+        notif.style.fontWeight = 'bold';
+        notif.style.zIndex = '1000';
+        notif.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+        notif.style.animation = 'slideIn 0.3s ease';
+        document.body.appendChild(notif);
+        
+        setTimeout(() => notif.remove(), 2500);
+    }
+    
+    function addExp(amount) {
+        exp += amount;
         checkLevelUp();
     }
     
@@ -453,168 +455,18 @@
             exp -= expNeeded;
             level++;
             coins += 50;
-            showNotification(`🎉 УРОВЕНЬ ${level}! +50 монет! 🎉`);
+            showSpeech(`🎉 УРОВЕНЬ ${level}! +50 монет! 🎉`);
             updateUI();
         }
     }
     
-    function addExp(amount) {
-        exp += amount;
-        checkLevelUp();
+    function animateTap() {
+        const emoji = document.getElementById('davidEmoji');
+        emoji.classList.add('tap-effect');
+        setTimeout(() => emoji.classList.remove('tap-effect'), 200);
     }
     
-    // Рисуем персонажа
-    function drawDavid() {
-        ctx.clearRect(0, 0, 280, 280);
-        
-        // Фон комнаты
-        if (room === 'forest') {
-            ctx.fillStyle = '#90EE90';
-            ctx.fillRect(0, 0, 280, 280);
-            ctx.fillStyle = '#228B22';
-            for(let i = 0; i < 15; i++) {
-                ctx.fillRect(20 + i * 40, 250, 8, 30);
-            }
-        } else if (room === 'beach') {
-            ctx.fillStyle = '#87CEEB';
-            ctx.fillRect(0, 0, 280, 280);
-            ctx.fillStyle = '#F4A460';
-            ctx.fillRect(0, 200, 280, 80);
-        } else if (room === 'night') {
-            ctx.fillStyle = '#191970';
-            ctx.fillRect(0, 0, 280, 280);
-            ctx.fillStyle = '#FFD700';
-            for(let i = 0; i < 30; i++) {
-                ctx.fillRect(Math.random() * 280, Math.random() * 280, 2, 2);
-            }
-        } else {
-            ctx.fillStyle = '#FCE5CD';
-            ctx.fillRect(0, 0, 280, 280);
-        }
-        
-        // Тело
-        ctx.fillStyle = '#FBC490';
-        ctx.beginPath();
-        ctx.ellipse(140, 160, 65, 80, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Голова
-        ctx.fillStyle = '#FBC490';
-        ctx.beginPath();
-        ctx.ellipse(140, 100, 60, 65, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Уши
-        ctx.fillStyle = '#E8A87C';
-        ctx.beginPath();
-        ctx.ellipse(90, 75, 20, 28, -0.3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(190, 75, 20, 28, 0.3, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Волосы
-        ctx.fillStyle = '#8B5A2B';
-        ctx.beginPath();
-        ctx.ellipse(140, 70, 50, 28, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Аксессуары
-        if (hat) {
-            ctx.fillStyle = '#FF6B6B';
-            ctx.fillRect(110, 48, 60, 22);
-            ctx.fillStyle = '#FF8C8C';
-            ctx.beginPath();
-            ctx.ellipse(140, 52, 35, 12, 0, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        if (scarf) {
-            ctx.fillStyle = '#FF69B4';
-            ctx.fillRect(115, 115, 50, 18);
-        }
-        
-        // Глаза
-        ctx.fillStyle = '#4D2E1B';
-        ctx.beginPath();
-        ctx.arc(115, 95, 7, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(165, 95, 7, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.fillStyle = 'white';
-        ctx.beginPath();
-        ctx.arc(112, 92, 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(162, 92, 2, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Рот
-        ctx.beginPath();
-        ctx.strokeStyle = '#8B4513';
-        ctx.lineWidth = 3;
-        if (happiness > 60) {
-            ctx.arc(140, 120, 18, 0.1, Math.PI - 0.1);
-        } else if (happiness < 30) {
-            ctx.arc(140, 130, 15, Math.PI, Math.PI * 2);
-        } else {
-            ctx.arc(140, 120, 16, 0.2, Math.PI - 0.2);
-        }
-        ctx.stroke();
-        
-        // Руки
-        ctx.fillStyle = '#FBC490';
-        ctx.beginPath();
-        ctx.ellipse(85, 155, 16, 28, -0.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(195, 155, 16, 28, 0.5, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Ноги
-        ctx.fillStyle = '#E8A87C';
-        ctx.beginPath();
-        ctx.ellipse(120, 220, 16, 25, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(160, 220, 16, 25, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Одежда
-        ctx.fillStyle = '#FF6B6B';
-        ctx.fillRect(115, 135, 50, 65);
-        ctx.fillStyle = '#4A90E2';
-        ctx.fillRect(115, 185, 50, 32);
-        
-        // Питомец
-        if (pet === 'cat') {
-            ctx.fillStyle = '#FFA500';
-            ctx.beginPath();
-            ctx.ellipse(210, 45, 12, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#000';
-            ctx.fillRect(205, 42, 3, 3);
-            ctx.fillRect(215, 42, 3, 3);
-        } else if (pet === 'dog') {
-            ctx.fillStyle = '#8B4513';
-            ctx.beginPath();
-            ctx.ellipse(210, 45, 10, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#000';
-            ctx.fillRect(206, 42, 2, 2);
-            ctx.fillRect(214, 42, 2, 2);
-        } else if (pet === 'bird') {
-            ctx.fillStyle = '#FFD700';
-            ctx.beginPath();
-            ctx.moveTo(210, 42);
-            ctx.lineTo(215, 48);
-            ctx.lineTo(205, 48);
-            ctx.fill();
-        }
-    }
-    
-    // Действия
+    // ==================== ОСНОВНЫЕ ДЕЙСТВИЯ ====================
     function feed() {
         if (coins >= 5 && hunger < 95) {
             coins -= 5;
@@ -626,8 +478,9 @@
         } else if (hunger >= 95) {
             showSpeech("Я сыт! Спасибо! 😊");
         } else {
-            showSpeech("Нужно 5 монеток на еду!");
+            showSpeech("Нужно 5 монет на еду! Поиграй в игры! ⭐");
         }
+        animateTap();
     }
     
     function play() {
@@ -641,9 +494,10 @@
             updateUI();
         } else if (energy < 15) {
             showSpeech("Я устал... Нужно поспать! 😴");
-        } else {
-            showSpeech("Сначала покорми меня! 🍕");
+        } else if (hunger < 20) {
+            showSpeech("Сначала покорми меня! Я голодный! 🍕");
         }
+        animateTap();
     }
     
     function sleep() {
@@ -653,6 +507,7 @@
         addExp(5);
         showSpeech("Zzz... Отдохнул! 💤");
         updateUI();
+        animateTap();
     }
     
     function pet() {
@@ -661,70 +516,55 @@
         addExp(3);
         showSpeech("*Мурлыкает* Спасибо! ❤️");
         updateUI();
+        animateTap();
     }
     
-    // Мини-игры
-    function fishGame() {
-        if (energy >= 10) {
-            let earn = 10 + Math.floor(Math.random() * 25);
+    // ==================== МИНИ-ИГРЫ ====================
+    window.playGame = function(game) {
+        if (game === 'fish') {
+            if (energy >= 10) {
+                let earn = 10 + Math.floor(Math.random() * 25);
+                coins += earn;
+                energy -= 8;
+                addExp(12);
+                showSpeech(`🐟 Поймал рыбку! +${earn} монет!`);
+                updateUI();
+            } else {
+                showSpeech("Слишком устал для рыбалки... Поспи! 😴");
+            }
+        } 
+        else if (game === 'exercise') {
+            if (hunger >= 15) {
+                let gain = 15 + Math.floor(Math.random() * 15);
+                energy = Math.min(100, energy + gain);
+                hunger -= 8;
+                addExp(10);
+                showSpeech(`🏃‍♂️ Зарядка бодрит! +${gain} энергии!`);
+                updateUI();
+            } else {
+                showSpeech("Сначала поешь! Я голодный! 🍕");
+            }
+        }
+        else if (game === 'quiz') {
+            let earn = 15 + Math.floor(Math.random() * 20);
             coins += earn;
-            energy -= 8;
-            addExp(12);
-            showSpeech(`🐟 Поймал рыбку! +${earn} монет!`);
+            happiness = Math.min(100, happiness + 12);
+            addExp(15);
+            showSpeech(`❓ Ты умный! +${earn} монет!`);
             updateUI();
-        } else {
-            showSpeech("Слишком устал для рыбалки...");
         }
-    }
-    
-    function exerciseGame() {
-        if (hunger >= 15) {
-            let gain = 15 + Math.floor(Math.random() * 15);
-            energy = Math.min(100, energy + gain);
-            hunger -= 8;
-            addExp(10);
-            showSpeech(`🏃‍♂️ Зарядка бодрит! +${gain} энергии!`);
+        else if (game === 'memory') {
+            let earn = 20 + Math.floor(Math.random() * 20);
+            coins += earn;
+            addExp(18);
+            showSpeech(`🧠 Отличная память! +${earn} монет!`);
             updateUI();
-        } else {
-            showSpeech("Сначала поешь, потом занимайся!");
         }
-    }
+        animateTap();
+    };
     
-    function quizGame() {
-        let earn = 15 + Math.floor(Math.random() * 20);
-        coins += earn;
-        happiness = Math.min(100, happiness + 12);
-        addExp(15);
-        showSpeech(`❓ Ты умный! +${earn} монет!`);
-        updateUI();
-    }
-    
-    function memoryGame() {
-        let earn = 20 + Math.floor(Math.random() * 20);
-        coins += earn;
-        addExp(18);
-        showSpeech(`🧠 Отличная память! +${earn} монет!`);
-        updateUI();
-    }
-    
-    // Ежедневный бонус
-    function dailyBonus() {
-        let now = Date.now();
-        let oneDay = 24 * 60 * 60 * 1000;
-        if (now - lastDaily > oneDay) {
-            let bonus = 50 + level * 10;
-            coins += bonus;
-            lastDaily = now;
-            showNotification(`🎁 Ежедневный бонус: ${bonus} монет!`);
-            updateUI();
-        } else {
-            let hoursLeft = Math.ceil((oneDay - (now - lastDaily)) / (60 * 60 * 1000));
-            showNotification(`Бонус через ${hoursLeft} часов!`, true);
-        }
-    }
-    
-    // Магазин
-    function buyShop(item) {
+    // ==================== МАГАЗИН ====================
+    window.buyItem = function(item) {
         if (item === 'pizza' && coins >= 20) {
             coins -= 20;
             hunger = Math.min(100, hunger + 40);
@@ -746,78 +586,103 @@
             happiness = Math.min(100, happiness + 20);
             showSpeech("🎂 Торт - супер!");
             updateUI();
-        } else if (item === 'hat' && coins >= 100 && !hat) {
-            coins -= 100;
-            hat = true;
-            showSpeech("🧢 Крутая шляпа!");
-            updateUI();
-        } else if (item === 'scarf' && coins >= 80 && !scarf) {
-            coins -= 80;
-            scarf = true;
-            showSpeech("🧣 Теплый шарф!");
-            updateUI();
         } else {
-            showSpeech("Не хватает монет или уже куплено!");
+            showSpeech("Не хватает монет! 🥺");
         }
-    }
+        animateTap();
+    };
     
-    function buyPet(petType) {
+    // ==================== ПИТОМЦЫ ====================
+    window.buyPet = function(petType) {
         let cost = {cat: 150, dog: 200, bird: 100}[petType];
-        if (coins >= cost && !pet) {
+        let petName = {cat: '🐱 Котенок', dog: '🐶 Щенок', bird: '🐦 Птичка'}[petType];
+        
+        if (coins >= cost && !hasPet) {
             coins -= cost;
-            pet = petType;
-            let petName = petType === 'cat' ? '🐱 Котенок' : (petType === 'dog' ? '🐶 Щенок' : '🐦 Птичка');
+            hasPet = petType;
             document.getElementById('petDisplay').innerHTML = `🐾 Твой питомец: ${petName} радуется!`;
-            showNotification(`Ты купил ${petName}!`);
+            showSpeech(`Ты купил ${petName}!`);
             updateUI();
-        } else if (pet) {
-            showSpeech("У тебя уже есть питомец!");
+        } else if (hasPet) {
+            showSpeech("У тебя уже есть питомец! 🐾");
         } else {
-            showSpeech("Не хватает монет!");
+            showSpeech("Не хватает монет! Поиграй в игры! ⭐");
         }
-    }
+        animateTap();
+    };
     
-    function buyRoom(roomType) {
-        if (coins >= 80 && room !== roomType) {
+    // ==================== КОМНАТЫ ====================
+    window.changeRoom = function(roomType) {
+        let roomName = {forest: '🌳 Лес', beach: '🌊 Пляж', night: '🌙 Ночь'}[roomType];
+        
+        if (coins >= 80 && currentRoom !== roomType) {
             coins -= 80;
-            room = roomType;
-            showNotification(`Комната изменена на ${roomType === 'forest' ? 'Лес' : (roomType === 'beach' ? 'Пляж' : 'Ночь')}!`);
+            currentRoom = roomType;
+            showSpeech(`Комната изменена на ${roomName}!`);
+            updateUI();
+        } else if (currentRoom === roomType) {
+            showSpeech("Эта комната уже активна! 🏠");
+        } else {
+            showSpeech("Не хватает 80 монет! ⭐");
+        }
+        animateTap();
+    };
+    
+    // ==================== ЕЖЕДНЕВНЫЙ БОНУС ====================
+    function dailyBonus() {
+        let now = Date.now();
+        let oneDay = 24 * 60 * 60 * 1000;
+        
+        if (now - lastDaily > oneDay) {
+            let bonus = 50 + level * 10;
+            coins += bonus;
+            lastDaily = now;
+            showNotification(`🎁 Ежедневный бонус: ${bonus} монет!`);
+            showSpeech(`🎁 Получено ${bonus} монет! Завтра приходи снова!`);
             updateUI();
         } else {
-            showSpeech("Не хватает монет!");
+            let hoursLeft = Math.ceil((oneDay - (now - lastDaily)) / (60 * 60 * 1000));
+            showNotification(`Бонус через ${hoursLeft} часов!`, true);
+            showSpeech(`Бонус можно забрать через ${hoursLeft} часов! ⏰`);
         }
+        animateTap();
     }
     
-    // Ухудшение параметров
+    // ==================== УХУДШЕНИЕ ПАРАМЕТРОВ ====================
     setInterval(() => {
         hunger = Math.max(0, hunger - 3);
         happiness = Math.max(0, happiness - 2);
         energy = Math.max(0, energy - 3);
         updateUI();
         
-        if (hunger < 20) showSpeech("Я голоден! Покорми меня 🍕");
-        else if (energy < 20) showSpeech("Я устал... Можно поспать? 😴");
-        else if (Math.random() < 0.15) {
-            let phrases = ["Как дела?", "Поиграем?", "Я скучаю...", "Обними меня!"];
+        // Случайные фразы
+        if (hunger < 20) {
+            showSpeech("Я голоден! Покорми меня 🍕");
+        } else if (energy < 20) {
+            showSpeech("Я устал... Можно поспать? 😴");
+        } else if (Math.random() < 0.1) {
+            let phrases = ["Как дела?", "Поиграем?", "Я скучаю...", "Обними меня!", "Ты мой друг! ❤️"];
             showSpeech(phrases[Math.floor(Math.random() * phrases.length)]);
         }
     }, 25000);
     
-    // Назначение обработчиков
+    // ==================== НАЖАТИЕ НА ПЕРСОНАЖА ====================
+    document.getElementById('characterArea').onclick = () => {
+        let phrases = ["Привет, друг! 😊", "Ты лучший!", "Я тебя люблю! ❤️", "Как настроение?", "Давай дружить!"];
+        showSpeech(phrases[Math.floor(Math.random() * phrases.length)]);
+        happiness = Math.min(100, happiness + 2);
+        updateUI();
+        animateTap();
+    };
+    
+    // ==================== ПОДКЛЮЧАЕМ КНОПКИ ====================
     document.getElementById('feedBtn').onclick = feed;
     document.getElementById('playBtn').onclick = play;
     document.getElementById('sleepBtn').onclick = sleep;
     document.getElementById('petBtn').onclick = pet;
     document.getElementById('dailyBonus').onclick = dailyBonus;
     
-    document.getElementById('characterArea').onclick = () => {
-        let phrases = ["Привет, друг! 😊", "Ты лучший!", "Я тебя люблю! ❤️", "Как настроение?"];
-        showSpeech(phrases[Math.floor(Math.random() * phrases.length)]);
-        happiness = Math.min(100, happiness + 2);
-        updateUI();
-    };
-    
-    // Вкладки
+    // ==================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ====================
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -827,35 +692,9 @@
         };
     });
     
-    // Игры
-    document.querySelectorAll('[data-game]').forEach(el => {
-        el.onclick = () => {
-            let game = el.dataset.game;
-            if (game === 'fish') fishGame();
-            else if (game === 'exercise') exerciseGame();
-            else if (game === 'quiz') quizGame();
-            else if (game === 'memory') memoryGame();
-        };
-    });
-    
-    // Магазин
-    document.querySelectorAll('[data-shop]').forEach(el => {
-        el.onclick = () => buyShop(el.dataset.shop);
-    });
-    
-    // Питомцы
-    document.querySelectorAll('[data-pet]').forEach(el => {
-        el.onclick = () => buyPet(el.dataset.pet);
-    });
-    
-    // Комнаты
-    document.querySelectorAll('[data-room]').forEach(el => {
-        el.onclick = () => buyRoom(el.dataset.room);
-    });
-    
-    // Запуск
+    // ==================== ЗАПУСК ====================
     updateUI();
-    drawDavid();
+    showSpeech("✨ Привет! Я Давид! Заботься обо мне! ✨");
 </script>
 </body>
 </html>
