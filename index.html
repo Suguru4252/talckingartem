@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Мой Говорящий Давид 5.0 - Полная версия</title>
+    <title>Мой Говорящий Артем - Виртуальный друг</title>
     <style>
         * {
             user-select: none;
@@ -121,7 +121,7 @@
             z-index: 2;
         }
 
-        #davidEmoji {
+        #artemEmoji {
             font-size: 110px;
             filter: drop-shadow(12px 16px 20px rgba(0,0,0,0.25));
             transition: all 0.1s ease;
@@ -389,7 +389,7 @@
             .stats-bar .stat { font-size: 0.55rem; padding: 2px 6px; }
             .action-btn { font-size: 0.55rem; }
             .action-btn span:first-child { font-size: 0.9rem; }
-            #davidEmoji { font-size: 80px; }
+            #artemEmoji { font-size: 80px; }
             .outfit-accessory { font-size: 28px; }
         }
     </style>
@@ -410,7 +410,7 @@
     <!-- Персонаж с аксессуарами -->
     <div class="character-area" id="characterArea">
         <div class="character-container">
-            <div id="davidEmoji" class="breathing">👨‍🦰</div>
+            <div id="artemEmoji" class="breathing">👨‍🦰</div>
             <!-- Все аксессуары -->
             <div id="outfitHat" class="outfit-accessory outfit-hat" style="display:none;">🧢</div>
             <div id="outfitTopHat" class="outfit-accessory outfit-hat" style="display:none;">🎩</div>
@@ -430,7 +430,7 @@
             <div id="outfitNinja" class="outfit-accessory outfit-ninja" style="display:none;">🥷</div>
             <div id="outfitBracelet" class="outfit-accessory outfit-bracelet" style="display:none;">💫</div>
         </div>
-        <div id="speechText" class="speech-bubble">✨ Привет! Я Давид 5.0! ✨</div>
+        <div id="speechText" class="speech-bubble">✨ Привет! Я Артем! ✨</div>
     </div>
 
     <!-- Кнопки действий -->
@@ -534,7 +534,7 @@
         <div id="achievementsList"></div>
     </div>
     
-    <footer>✨ Нажми на Давида! Все купленные украшения сохраняются навсегда ✨</footer>
+    <footer>✨ Нажми на Артема! Все купленные украшения сохраняются навсегда ✨</footer>
 </div>
 
 <script>
@@ -625,7 +625,8 @@
         // Скрываем все
         for (let key in outfitsData) {
             if (outfitsData[key].elementId) {
-                document.getElementById(outfitsData[key].elementId).style.display = 'none';
+                let elem = document.getElementById(outfitsData[key].elementId);
+                if (elem) elem.style.display = 'none';
             }
         }
         
@@ -688,7 +689,7 @@
         speechDiv.innerText = text;
         setTimeout(() => {
             if (speechDiv.innerText === text) {
-                let phrases = ["✨ Привет! Я Давид! ✨", "Как дела?", "Поиграем? ⚽", "Я тебя люблю! ❤️"];
+                let phrases = ["✨ Привет! Я Артем! ✨", "Как дела?", "Поиграем? ⚽", "Я тебя люблю! ❤️"];
                 speechDiv.innerText = phrases[Math.floor(Math.random() * phrases.length)];
             }
         }, 3000);
@@ -719,11 +720,11 @@
         updateAchievementsUI();
         checkLevelUp();
         applyPetBonus();
-        setupOutfitsGrid(); // Обновляем сетку украшений для показа владения
+        setupOutfitsGrid();
     }
     
     function updateEmoji() {
-        let emoji = document.getElementById('davidEmoji');
+        let emoji = document.getElementById('artemEmoji');
         let base = '👨‍🦰';
         if (hunger < 20) base = '😫';
         else if (energy < 20) base = '😴';
@@ -972,8 +973,8 @@
         // Покупка нового украшения
         if (coins >= outfit.price) {
             coins -= outfit.price;
-            ownedOutfits[outfitKey] = true; // Сохраняем в инвентарь
-            activeOutfits[outfitKey] = true; // Автоматически надеваем
+            ownedOutfits[outfitKey] = true;
+            activeOutfits[outfitKey] = true;
             showSpeech(`🎉 Купил ${outfit.name}! Теперь он у тебя навсегда! ✨`);
             createParticles(null, null, ['🎉', '✨', '🌟', '💎']);
             updateCharacterAppearance();
@@ -1111,12 +1112,12 @@
             achievements, skills, dailyQuests, weeklyQuests,
             ownedOutfits, activeOutfits
         };
-        localStorage.setItem('davidSave5', JSON.stringify(saveData));
+        localStorage.setItem('artemSave', JSON.stringify(saveData));
         showNotification('💾 Сохранено! Все украшения сохранены!');
     }
     
     function loadGame() {
-        let save = localStorage.getItem('davidSave5');
+        let save = localStorage.getItem('artemSave');
         if(save) {
             let data = JSON.parse(save);
             hunger = data.hunger || 100; happiness = data.happiness || 100; energy = data.energy || 100; cleanliness = data.cleanliness || 100;
@@ -1147,7 +1148,6 @@
     }
     
     function setupOutfitsGrid() {
-        // Группируем по категориям
         let categories = {
             "Головные уборы": ["hat", "topHat", "crown"],
             "Лицо": ["glasses", "mask"],
@@ -1160,7 +1160,6 @@
         
         let html = '';
         
-        // Классика отдельно
         let isClassicActive = !Object.values(activeOutfits).some(v => v === true);
         html += `<div class="feature-card ${isClassicActive ? 'active-outfit' : ''}" onclick="buyOutfit('classic')">
             <div class="feature-icon">👕</div>
@@ -1268,7 +1267,7 @@
     setupOutfitsGrid();
     loadGame();
     updateUI();
-    showSpeech("✨ Добро пожаловать в Давид 5.0! Украшения сохраняются навсегда! ✨");
+    showSpeech("✨ Добро пожаловать! Я Артем! Украшения сохраняются навсегда! ✨");
     
     window.upgradeSkill = upgradeSkill;
     window.buyOutfit = buyOutfit;
