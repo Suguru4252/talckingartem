@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Space Frontier: LEGENDARY | Epic Space Defense</title>
+    <title>Space Frontier: LEGENDARY | Manual Shooting</title>
     <style>
         * {
             margin: 0;
@@ -160,10 +160,27 @@
             white-space: nowrap;
         }
 
+        .shoot-instruction {
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            color: #ffaa44;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 250;
+            font-family: monospace;
+            white-space: nowrap;
+        }
+
         @media (max-width: 700px) {
             .hud-panel { font-size: 0.7rem; padding: 3px 8px; }
             .upgrade-btn { padding: 4px 8px; font-size: 0.65rem; }
             .upgrade-menu { max-height: 100px; gap: 5px; }
+            .shoot-instruction { bottom: 140px; font-size: 10px; }
         }
     </style>
 </head>
@@ -171,12 +188,12 @@
     <div class="hud">
         <div class="hud-panel">❤️ ЗДОРОВЬЕ: <span id="healthVal">100</span></div>
         <div class="hud-panel">⭐ ОЧКИ: <span id="scoreVal">0</span></div>
-        <div class="hud-panel">🔫 УРОВЕНЬ: <span id="levelVal">1</span></div>
+        <div class="hud-panel">🔫 ВОЛНА: <span id="levelVal">1</span></div>
         <div class="hud-panel">💥 УРОН: <span id="dmgVal">10</span></div>
         <div class="hud-panel">⚡ КРИТ: <span id="critVal">5</span>%</div>
         <div class="hud-panel">💰 МОНЕТЫ: <span id="coinVal">0</span></div>
         <div class="hud-panel">✨ ОПЫТ: <span id="xpVal">0</span>/<span id="xpNextVal">100</span></div>
-        <div class="hud-panel">🎯 УРОВЕНЬ ИГРОКА: <span id="playerLvlVal">1</span></div>
+        <div class="hud-panel">🎯 УРОВЕНЬ: <span id="playerLvlVal">1</span></div>
     </div>
 
     <div class="boss-bar" id="bossBar">
@@ -197,6 +214,8 @@
         <button class="upgrade-btn skill-btn" data-upgrade="slow">❄️ Замедление (350⭐)</button>
         <button class="upgrade-btn skill-btn" data-upgrade="shield">🛡️ Энергощит (450⭐)</button>
     </div>
+
+    <div class="shoot-instruction">🎯 КЛИКНИ ПО ВРАГУ, ЧТОБЫ ВЫСТРЕЛИТЬ!</div>
 
     <div class="game-over" id="gameOverDiv">
         <h1>💀 GAME OVER 💀</h1>
@@ -227,7 +246,7 @@
             let enemies = [];
             let bullets = [];
             let particles = [];
-            let effects = []; // спецэффекты замедления и т.д.
+            let effects = [];
             
             // Система уровней игрока
             let playerLevel = 1;
@@ -243,16 +262,13 @@
                 critChance: 5,
                 multishot: false,
                 coinMultiplier: 1,
-                fireRateBonus: 0,    // уменьшает кулдаун
-                pierce: 0,            // количество пробитий
-                vampire: false,       // лечение от урона
+                fireRateBonus: 0,
+                pierce: 0,
+                vampire: false,
                 slowEffect: false,
                 novaReady: true,
                 novaCooldown: 0
             };
-            
-            let lastShot = 0;
-            let fireDelay = 18; // базовый delay в кадрах
             
             // Параметры игрока
             let player = { x: canvas.width/2, y: canvas.height - 70, radius: 20 };
@@ -289,14 +305,12 @@
                 }
             }
             
-            // Дать опыт
             function addXP(amount) {
                 playerXP += amount;
                 while(playerXP >= xpToNext) {
                     playerXP -= xpToNext;
                     playerLevel++;
                     xpToNext = Math.floor(100 + playerLevel * 15);
-                    // Награда за уровень
                     maxHealth += 10;
                     health = Math.min(health + 20, maxHealth);
                     score += 50;
@@ -361,7 +375,6 @@
                 });
             }
             
-            // Способность НОВА
             function castNova() {
                 if(!upgrades.novaReady || upgrades.novaCooldown > 0) return false;
                 let damage = 80 + playerLevel * 6;
@@ -376,37 +389,49 @@
                     }
                 }
                 enemies = enemies.filter(e => e.health > 0);
-                upgrades.novaCooldown = 180; // кулдаун ~3 секунды при 60fps
+                upgrades.novaCooldown = 180;
                 createTextEffect(player.x, player.y-30, "✨ НОВА ✨", "#ff44ff");
                 updateUI();
                 return true;
             }
             
+            // ФУНКЦИЯ ВЫСТРЕЛА - вызывается ТОЛЬКО при клике
             function shoot(targetX, targetY) {
+                if(!gameRunning) return;
+                
                 let dmg = 10 + upgrades.damageBonus + Math.floor(playerLevel / 3);
                 let isCrit = Math.random() * 100 < upgrades.critChance;
                 let finalDmg = isCrit ? dmg * 2.5 : dmg;
                 
-                if(isCrit) for(let i=0;i<5;i++) createParticle(targetX, targetY, '#ffaa44');
+                if(isCrit) {
+                    for(let i=0;i<8;i++) createParticle(targetX, targetY, '#ffaa44');
+                    createTextEffect(targetX, targetY-15, "КРИТ!", "#ffaa00");
+                }
                 
                 let pierceLeft = upgrades.pierce;
                 bullets.push({
                     x: player.x, y: player.y - 15, targetX: targetX, targetY: targetY,
-                    damage: finalDmg, radius: 7, speed: 14, isCrit: isCrit,
+                    damage: finalDmg, radius: 7, speed: 15, isCrit: isCrit,
                     pierce: pierceLeft, hitList: []
                 });
                 
+                // Мультивыстрел
                 if(upgrades.multishot) {
                     setTimeout(() => {
-                        bullets.push({ x: player.x-12, y: player.y-10, targetX: targetX+(Math.random()-0.5)*70, targetY: targetY+(Math.random()-0.5)*50, damage: dmg*0.7, radius: 6, speed: 13, isCrit: false, pierce: 0, hitList: [] });
-                        bullets.push({ x: player.x+12, y: player.y-10, targetX: targetX+(Math.random()-0.5)*70, targetY: targetY+(Math.random()-0.5)*50, damage: dmg*0.7, radius: 6, speed: 13, isCrit: false, pierce: 0, hitList: [] });
-                    }, 15);
+                        bullets.push({ x: player.x-14, y: player.y-10, targetX: targetX+(Math.random()-0.5)*80, targetY: targetY+(Math.random()-0.5)*60, damage: dmg*0.7, radius: 6, speed: 14, isCrit: false, pierce: 0, hitList: [] });
+                        bullets.push({ x: player.x+14, y: player.y-10, targetX: targetX+(Math.random()-0.5)*80, targetY: targetY+(Math.random()-0.5)*60, damage: dmg*0.7, radius: 6, speed: 14, isCrit: false, pierce: 0, hitList: [] });
+                    }, 10);
                 }
+                
+                // Вампиризм
                 if(upgrades.vampire) {
                     let healAmount = finalDmg * 0.08;
                     health = Math.min(health + healAmount, maxHealth);
                     createTextEffect(player.x, player.y, "+"+Math.floor(healAmount), "#ff8888");
                 }
+                
+                // Эффект выстрела
+                createParticle(player.x, player.y-15, "#88aaff");
             }
             
             function updateBullets() {
@@ -414,7 +439,7 @@
                     let b = bullets[i];
                     let dx = b.targetX - b.x, dy = b.targetY - b.y;
                     let dist = Math.hypot(dx,dy);
-                    if(dist < 8) {
+                    if(dist < 10) {
                         let hitSomething = false;
                         for(let e of enemies) {
                             if(b.hitList.includes(e)) continue;
@@ -425,9 +450,8 @@
                                 b.hitList.push(e);
                                 createParticle(b.targetX, b.targetY, b.isCrit ? '#ffaa55' : '#ff8866');
                                 if(b.pierce > 0 && b.hitList.length <= b.pierce+1) {
-                                    // продолжаем полет
-                                    b.targetX = e.x + (Math.random()-0.5)*60;
-                                    b.targetY = e.y + (Math.random()-0.5)*60;
+                                    b.targetX = e.x + (Math.random()-0.5)*70;
+                                    b.targetY = e.y + (Math.random()-0.5)*70;
                                 } else {
                                     bullets.splice(i,1); i--; break;
                                 }
@@ -547,7 +571,7 @@
                 else if(type === 'multishot' && !upgrades.multishot && score >= 200) { score -= 200; upgrades.multishot = true; }
                 else if(type === 'heal' && score >= 100 && health < maxHealth) { score -= 100; health = Math.min(health+30, maxHealth); }
                 else if(type === 'coinboost' && upgrades.coinMultiplier === 1 && score >= 300) { score -= 300; upgrades.coinMultiplier = 2; }
-                else if(type === 'firespeed' && score >= 250) { score -= 250; fireDelay = Math.max(8, fireDelay-3); upgrades.fireRateBonus++; }
+                else if(type === 'firespeed' && score >= 250) { score -= 250; upgrades.fireRateBonus++; }
                 else if(type === 'pierce' && score >= 400) { score -= 400; upgrades.pierce++; }
                 else if(type === 'vampire' && !upgrades.vampire && score >= 500) { score -= 500; upgrades.vampire = true; }
                 else if(type === 'slow' && !upgrades.slowEffect && score >= 350) { score -= 350; upgrades.slowEffect = true; }
@@ -555,6 +579,7 @@
                 else if(type === 'nova' && upgrades.novaReady && score >= 800) { score -= 800; castNova(); }
                 else return false;
                 updateUI();
+                createTextEffect(player.x, player.y-20, "UPGRADE!", "#88ff88");
                 return true;
             }
             
@@ -571,20 +596,20 @@
                 playerLevel = 1; playerXP = 0; xpToNext = 100;
                 shieldActive = false;
                 upgrades = { damageBonus:0, critChance:5, multishot:false, coinMultiplier:1, fireRateBonus:0, pierce:0, vampire:false, slowEffect:false, novaReady:true, novaCooldown:0 };
-                fireDelay = 18; lastShot = 0;
                 enemiesToSpawn = 5; enemiesSpawned = 0; waveInProgress = true; bossActive = false;
                 updateUI();
                 document.getElementById('gameOverDiv').style.display = 'none';
             }
             
-            let mouseXForMove = player.x;
+            // Движение мыши
             canvas.addEventListener('mousemove', (e) => {
                 if(!gameRunning) return;
                 const rect = canvas.getBoundingClientRect();
                 const scaleX = canvas.width / rect.width;
-                mouseXForMove = (e.clientX - rect.left) * scaleX;
-                player.x = Math.min(Math.max(mouseXForMove, 40), canvas.width-40);
+                let mouseX = (e.clientX - rect.left) * scaleX;
+                player.x = Math.min(Math.max(mouseX, 40), canvas.width-40);
             });
+            
             canvas.addEventListener('touchmove', (e) => {
                 e.preventDefault();
                 if(!gameRunning) return;
@@ -595,61 +620,146 @@
                 player.x = Math.min(Math.max(tx, 40), canvas.width-40);
             });
             
+            // СТРЕЛЬБА ТОЛЬКО ПО КЛИКУ
             function handleShoot(e) {
                 if(!gameRunning) return;
                 const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-                let mx = (e.clientX - rect.left) * scaleX;
-                let my = (e.clientY - rect.top) * scaleY;
-                shoot(mx, my);
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                let clickX, clickY;
+                if(e.touches) {
+                    // Тач-событие
+                    clickX = (e.touches[0].clientX - rect.left) * scaleX;
+                    clickY = (e.touches[0].clientY - rect.top) * scaleY;
+                    e.preventDefault();
+                } else {
+                    // Мышь
+                    clickX = (e.clientX - rect.left) * scaleX;
+                    clickY = (e.clientY - rect.top) * scaleY;
+                }
+                
+                shoot(clickX, clickY);
             }
-            canvas.addEventListener('click', handleShoot);
-            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); const rect = canvas.getBoundingClientRect(); const touch = e.touches[0]; const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height; shoot((touch.clientX - rect.left)*scaleX, (touch.clientY - rect.top)*scaleY); });
             
+            canvas.addEventListener('click', handleShoot);
+            canvas.addEventListener('touchstart', handleShoot);
+            
+            // Апгрейды
             document.querySelectorAll('.upgrade-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); applyUpgrade(btn.getAttribute('data-upgrade')); });
+                btn.addEventListener('click', (e) => { 
+                    e.stopPropagation(); 
+                    applyUpgrade(btn.getAttribute('data-upgrade')); 
+                });
             });
+            
             document.getElementById('restartBtn').addEventListener('click', () => restartGame());
             
             function draw() {
-                ctx.fillStyle = '#020218'; ctx.fillRect(0,0,canvas.width,canvas.height);
-                for(let i=0;i<200;i++) { ctx.fillStyle = `rgba(255,255,200,${0.2+Math.sin(Date.now()*0.001+i)*0.1})`; ctx.beginPath(); ctx.arc((i*131)%canvas.width, (i*57)%canvas.height, 1+(i%3), 0, Math.PI*2); ctx.fill(); }
+                ctx.fillStyle = '#020218'; 
+                ctx.fillRect(0,0,canvas.width,canvas.height);
                 
-                ctx.shadowBlur = 12; ctx.fillStyle = '#4c9eff';
-                ctx.beginPath(); ctx.moveTo(player.x, player.y-25); ctx.lineTo(player.x-18, player.y+5); ctx.lineTo(player.x-8, player.y+5); ctx.lineTo(player.x-8, player.y+18); ctx.lineTo(player.x, player.y+12); ctx.lineTo(player.x+8, player.y+18); ctx.lineTo(player.x+8, player.y+5); ctx.lineTo(player.x+18, player.y+5); ctx.fill();
-                if(shieldActive) { ctx.beginPath(); ctx.arc(player.x, player.y-5, 28, 0, Math.PI*2); ctx.strokeStyle = '#88aaff'; ctx.lineWidth = 3; ctx.stroke(); }
-                
-                for(let e of enemies) {
-                    ctx.fillStyle = e.color; ctx.beginPath(); ctx.arc(e.x, e.y, e.radius, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#fff'; ctx.font = "bold 12px monospace"; ctx.fillText(`${Math.floor(e.health)}`, e.x-12, e.y-8);
-                    let percent = e.health/e.maxHealth; ctx.fillStyle = '#a00'; ctx.fillRect(e.x-e.radius, e.y-e.radius-8, e.radius*2, 5);
-                    ctx.fillStyle = '#0f0'; ctx.fillRect(e.x-e.radius, e.y-e.radius-8, e.radius*2*percent, 4);
-                    if(e.slowTimer>0 && upgrades.slowEffect) { ctx.fillStyle = '#aaffff'; ctx.beginPath(); ctx.arc(e.x, e.y, e.radius+3, 0, Math.PI*2); ctx.stroke(); }
+                // Звёзды
+                for(let i=0;i<200;i++) { 
+                    ctx.fillStyle = `rgba(255,255,200,${0.2+Math.sin(Date.now()*0.001+i)*0.1})`; 
+                    ctx.beginPath(); 
+                    ctx.arc((i*131)%canvas.width, (i*57)%canvas.height, 1+(i%3), 0, Math.PI*2); 
+                    ctx.fill(); 
                 }
-                for(let b of bullets) { ctx.fillStyle = b.isCrit ? '#ffaa55' : '#ffff88'; ctx.beginPath(); ctx.arc(b.x, b.y, b.radius-2, 0, Math.PI*2); ctx.fill(); }
-                for(let p of particles) { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size*p.life, 0, Math.PI*2); ctx.fill(); }
-                for(let ef of effects) { ctx.globalAlpha = ef.life; ctx.fillStyle = ef.color; ctx.font = "bold 18px monospace"; ctx.fillText(ef.text, ef.x-20, ef.y); }
-                ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-                if(!waveInProgress && waveDelay>0) { ctx.fillStyle = "#ffaa44"; ctx.font = "bold 24px monospace"; ctx.fillText(`⚡ ВОЛНА ${wave-1} ПРОЙДЕНА! ⚡`, canvas.width/2-180, canvas.height/2); }
+                
+                // Игрок
+                ctx.shadowBlur = 12; 
+                ctx.fillStyle = '#4c9eff';
+                ctx.beginPath(); 
+                ctx.moveTo(player.x, player.y-25); 
+                ctx.lineTo(player.x-18, player.y+5); 
+                ctx.lineTo(player.x-8, player.y+5); 
+                ctx.lineTo(player.x-8, player.y+18); 
+                ctx.lineTo(player.x, player.y+12); 
+                ctx.lineTo(player.x+8, player.y+18); 
+                ctx.lineTo(player.x+8, player.y+5); 
+                ctx.lineTo(player.x+18, player.y+5); 
+                ctx.fill();
+                
+                if(shieldActive) { 
+                    ctx.beginPath(); 
+                    ctx.arc(player.x, player.y-5, 30, 0, Math.PI*2); 
+                    ctx.strokeStyle = '#88aaff'; 
+                    ctx.lineWidth = 3; 
+                    ctx.stroke(); 
+                }
+                
+                // Враги
+                for(let e of enemies) {
+                    ctx.fillStyle = e.color; 
+                    ctx.beginPath(); 
+                    ctx.arc(e.x, e.y, e.radius, 0, Math.PI*2); 
+                    ctx.fill();
+                    ctx.fillStyle = '#fff'; 
+                    ctx.font = "bold 12px monospace"; 
+                    ctx.fillText(`${Math.floor(e.health)}`, e.x-12, e.y-8);
+                    let percent = e.health/e.maxHealth; 
+                    ctx.fillStyle = '#a00'; 
+                    ctx.fillRect(e.x-e.radius, e.y-e.radius-8, e.radius*2, 5);
+                    ctx.fillStyle = '#0f0'; 
+                    ctx.fillRect(e.x-e.radius, e.y-e.radius-8, e.radius*2*percent, 4);
+                    if(e.slowTimer>0 && upgrades.slowEffect) { 
+                        ctx.strokeStyle = '#aaffff'; 
+                        ctx.beginPath(); 
+                        ctx.arc(e.x, e.y, e.radius+3, 0, Math.PI*2); 
+                        ctx.stroke(); 
+                    }
+                }
+                
+                // Пули
+                for(let b of bullets) { 
+                    ctx.fillStyle = b.isCrit ? '#ffaa55' : '#ffff88'; 
+                    ctx.beginPath(); 
+                    ctx.arc(b.x, b.y, b.radius-2, 0, Math.PI*2); 
+                    ctx.fill(); 
+                }
+                
+                // Частицы
+                for(let p of particles) { 
+                    ctx.globalAlpha = p.life; 
+                    ctx.fillStyle = p.color; 
+                    ctx.beginPath(); 
+                    ctx.arc(p.x, p.y, p.size*p.life, 0, Math.PI*2); 
+                    ctx.fill(); 
+                }
+                
+                // Текстовые эффекты
+                for(let ef of effects) { 
+                    ctx.globalAlpha = ef.life; 
+                    ctx.fillStyle = ef.color; 
+                    ctx.font = "bold 18px monospace"; 
+                    ctx.fillText(ef.text, ef.x-20, ef.y); 
+                }
+                
+                ctx.globalAlpha = 1; 
+                ctx.shadowBlur = 0;
+                
+                if(!waveInProgress && waveDelay>0) { 
+                    ctx.fillStyle = "#ffaa44"; 
+                    ctx.font = "bold 24px monospace"; 
+                    ctx.fillText(`⚡ ВОЛНА ${wave-1} ПРОЙДЕНА! ⚡`, canvas.width/2-180, canvas.height/2); 
+                }
             }
             
-            let frame = 0;
             function gameLoop() {
                 if(gameRunning) {
-                    if(frame - lastShot > fireDelay && enemies.length > 0) {
-                        let closest = enemies.reduce((a,b)=> (Math.hypot(a.x-player.x, a.y-player.y) < Math.hypot(b.x-player.x, b.y-player.y) ? a : b));
-                        if(closest) shoot(closest.x, closest.y);
-                        lastShot = frame;
-                    }
-                    updateBullets(); updateEnemies(); updateWaveSystem(); updateParticles();
+                    updateBullets(); 
+                    updateEnemies(); 
+                    updateWaveSystem(); 
+                    updateParticles();
                     if(health<=0) gameOver();
                     health = Math.min(health, maxHealth);
                     updateUI();
-                    frame++;
                 }
                 draw();
                 requestAnimationFrame(gameLoop);
             }
+            
             gameLoop();
         })();
     </script>
