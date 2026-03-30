@@ -482,6 +482,11 @@
         button {
             cursor: pointer;
         }
+        
+        .highlight {
+            background: rgba(255,107,107,0.3);
+            border-left: 3px solid #ff6b6b;
+        }
     </style>
 </head>
 <body>
@@ -511,8 +516,8 @@
 
         // ========== СОХРАНЕНИЕ ==========
         function loadData() {
-            const savedUsers = localStorage.getItem('chugur_users');
-            const savedMessages = localStorage.getItem('chugur_msgs');
+            const savedUsers = localStorage.getItem('chugur_users_v3');
+            const savedMessages = localStorage.getItem('chugur_msgs_v3');
             
             if (savedUsers) {
                 users = JSON.parse(savedUsers);
@@ -532,33 +537,37 @@
         }
 
         function saveUsers() {
-            localStorage.setItem('chugur_users', JSON.stringify(users));
+            localStorage.setItem('chugur_users_v3', JSON.stringify(users));
         }
 
         function saveMessages() {
-            localStorage.setItem('chugur_msgs', JSON.stringify(messages));
+            localStorage.setItem('chugur_msgs_v3', JSON.stringify(messages));
         }
 
         function saveAll() {
             saveUsers();
             saveMessages();
-            // триггер для обновления других вкладок
-            localStorage.setItem('chugur_update', Date.now().toString());
+            localStorage.setItem('chugur_update_v3', Date.now().toString());
         }
 
         // Слушаем обновления в реальном времени
         window.addEventListener('storage', function(e) {
-            if (e.key === 'chugur_update' || e.key === 'chugur_msgs') {
+            if (e.key === 'chugur_update_v3' || e.key === 'chugur_msgs_v3') {
+                const oldUsersCount = users.length;
+                const oldMsgCount = messages.length;
                 loadData();
-                updateBadge();
-                // если сейчас в чате с кем-то, обновляем чат
+                
+                // Обновляем интерфейс
                 if (currentChatUser) {
                     renderChat();
                 }
-                // обновляем список диалогов если на странице сообщений
                 if (document.getElementById('dialogsList') && !currentChatUser) {
                     showMessages();
                 }
+                if (document.getElementById('allPlayers')) {
+                    renderAllPlayers();
+                }
+                updateBadge();
             }
         });
 
@@ -586,7 +595,7 @@
                 <div class="auth-section">
                     <div class="auth-card">
                         <h2 style="text-align:center; margin-bottom:20px;">🎮 Chugur</h2>
-                        <input type="text" id="loginUsername" class="auth-input" placeholder="Username">
+                        <input type="text" id="loginUsername" class="auth-input" placeholder="Username (player123)">
                         <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
                         <button class="auth-btn" onclick="login()">Войти</button>
                         <div class="switch-auth" onclick="showRegister()">✨ Создать аккаунт</div>
@@ -639,7 +648,6 @@
             tempAvatar = null;
             const preview = document.getElementById('avatarPreview');
             if (preview) preview.style.display = 'none';
-            alert('Фото не выбрано, будет использован стандартный аватар');
         }
 
         function register() {
@@ -664,7 +672,7 @@
             users.push(newUser);
             saveUsers();
             currentUser = newUser;
-            localStorage.setItem('chugur_current', JSON.stringify(currentUser));
+            localStorage.setItem('chugur_current_v3', JSON.stringify(currentUser));
             startApp();
             alert(`✅ Аккаунт создан!\n\n🎮 Твой username: ${username}\n🔐 Пароль: ${password}\n\nЗапомни! Тебя могут найти по этому username.`);
         }
@@ -677,7 +685,7 @@
             
             if (user) {
                 currentUser = JSON.parse(JSON.stringify(user));
-                localStorage.setItem('chugur_current', JSON.stringify(currentUser));
+                localStorage.setItem('chugur_current_v3', JSON.stringify(currentUser));
                 startApp();
             } else {
                 alert('❌ Неверный username или пароль');
@@ -687,11 +695,11 @@
         function logout() {
             if (updateInterval) clearInterval(updateInterval);
             currentUser = null;
-            localStorage.removeItem('chugur_current');
+            localStorage.removeItem('chugur_current_v3');
             renderAuth();
         }
 
-        // ========== ПОИСК ИГРОКА ==========
+        // ========== ПОИСК ИГРОКА - ПО ИМЕНИ И ПО USERNAME ==========
         function showSearch() {
             if (!currentUser) return;
             
@@ -703,9 +711,9 @@
                 <div class="content">
                     <div class="search-block">
                         <div class="search-title">🔎 Найти игрока</div>
-                        <div class="search-desc">Введи username, который тебе назвали</div>
+                        <div class="search-desc">Введи имя или username игрока</div>
                         <div class="search-input-group">
-                            <input type="text" id="searchUsername" placeholder="Например: player123" autocomplete="off">
+                            <input type="text" id="searchUsername" placeholder="Имя или username (например: Алекс или player777)" autocomplete="off">
                             <button class="search-btn" onclick="findPlayer()">Найти →</button>
                         </div>
                         <div id="searchResult"></div>
@@ -727,16 +735,21 @@
             document.querySelectorAll('.nav-item')[0]?.classList.add('active');
         }
         
+        // ПОИСК ПО ИМЕНИ И ПО USERNAME
         function findPlayer() {
-            const username = document.getElementById('searchUsername').value.trim().toLowerCase();
+            const query = document.getElementById('searchUsername').value.trim().toLowerCase();
             const resultDiv = document.getElementById('searchResult');
             
-            if (!username) {
-                resultDiv.innerHTML = '<div class="not-found">❌ Введи username</div>';
+            if (!query) {
+                resultDiv.innerHTML = '<div class="not-found">❌ Введи имя или username</div>';
                 return;
             }
             
-            const found = users.find(u => u.username === username && u.id !== currentUser.id);
+            // Ищем по username ИЛИ по имени (name)
+            const found = users.find(u => 
+                (u.id !== currentUser.id) && 
+                (u.username.toLowerCase() === query || u.name.toLowerCase() === query || u.name.toLowerCase().includes(query))
+            );
             
             if (found) {
                 const avatarUrl = found.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=70&name=${encodeURIComponent(found.name)}`;
@@ -754,7 +767,7 @@
                     </div>
                 `;
             } else {
-                resultDiv.innerHTML = `<div class="not-found">❌ Игрок с username "${escapeHtml(username)}" не найден<br>Проверь написание или зарегистрируйся, если его нет</div>`;
+                resultDiv.innerHTML = `<div class="not-found">❌ Игрок с именем или username "${escapeHtml(query)}" не найден<br>Проверь написание или зарегистрируйся, если его нет</div>`;
             }
         }
         
@@ -993,7 +1006,7 @@
             const idx = users.findIndex(u => u.id === currentUser.id);
             if (idx !== -1) users[idx] = currentUser;
             saveUsers();
-            localStorage.setItem('chugur_current', JSON.stringify(currentUser));
+            localStorage.setItem('chugur_current_v3', JSON.stringify(currentUser));
             showProfile();
         }
         
@@ -1037,10 +1050,10 @@
             document.getElementById('authContainer').style.display = 'none';
             showSearch();
             
-            // каждые 2 секунды проверяем новые сообщения
+            // каждую секунду проверяем новые сообщения
             if (updateInterval) clearInterval(updateInterval);
             updateInterval = setInterval(() => {
-                const oldMessagesCount = messages.length;
+                const oldMsgCount = messages.length;
                 loadData();
                 if (currentChatUser) {
                     renderChat();
@@ -1048,15 +1061,18 @@
                 if (document.getElementById('dialogsList') && !currentChatUser) {
                     showMessages();
                 }
+                if (document.getElementById('allPlayers')) {
+                    renderAllPlayers();
+                }
                 updateBadge();
-            }, 2000);
+            }, 1000);
             
             updateBadge();
         }
         
         // ========== ЗАПУСК ==========
         loadData();
-        const saved = localStorage.getItem('chugur_current');
+        const saved = localStorage.getItem('chugur_current_v3');
         if (saved) {
             const parsed = JSON.parse(saved);
             currentUser = users.find(u => u.id === parsed.id);
