@@ -585,6 +585,13 @@
     </div>
 
     <script>
+        // ========== ГЛОБАЛЬНЫЕ КЛЮЧИ ДЛЯ ХРАНЕНИЯ ==========
+        const STORAGE_KEYS = {
+            USERS: 'chugur_users_v2',
+            POSTS: 'chugur_posts_v2',
+            MESSAGES: 'chugur_messages_v2'
+        };
+
         // ========== ДАННЫЕ ==========
         let currentUser = null;
         let users = [];
@@ -594,27 +601,74 @@
         let currentView = 'feed';
         let updateInterval = null;
 
-        // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
+        // ========== ЗАГРУЗКА/СОХРАНЕНИЕ (ГЛОБАЛЬНО) ==========
         function loadData() {
-            const savedUsers = localStorage.getItem('chugur_users');
-            const savedPosts = localStorage.getItem('chugur_posts');
-            const savedMessages = localStorage.getItem('chugur_messages');
+            const savedUsers = localStorage.getItem(STORAGE_KEYS.USERS);
+            const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
+            const savedMessages = localStorage.getItem(STORAGE_KEYS.MESSAGES);
             
-            if (savedUsers) users = JSON.parse(savedUsers);
-            else users = [];
+            if (savedUsers) {
+                users = JSON.parse(savedUsers);
+            } else {
+                // Создаем демо-пользователя если нет данных
+                users = [{
+                    id: '1',
+                    username: 'admin',
+                    password: '123',
+                    name: 'Администратор',
+                    avatar: '',
+                    bio: 'Добро пожаловать в Chugur!'
+                }];
+                localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+            }
             
-            if (savedPosts) posts = JSON.parse(savedPosts);
-            else posts = [];
+            if (savedPosts) {
+                posts = JSON.parse(savedPosts);
+            } else {
+                posts = [];
+            }
             
-            if (savedMessages) messages = JSON.parse(savedMessages);
-            else messages = [];
+            if (savedMessages) {
+                messages = JSON.parse(savedMessages);
+            } else {
+                messages = [];
+            }
         }
 
         function saveData() {
-            localStorage.setItem('chugur_users', JSON.stringify(users));
-            localStorage.setItem('chugur_posts', JSON.stringify(posts));
-            localStorage.setItem('chugur_messages', JSON.stringify(messages));
+            localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+            localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts));
+            localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
+            
+            // Триггерим событие для обновления других вкладок
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'chugur_data_updated',
+                newValue: Date.now().toString()
+            }));
         }
+
+        // Синхронизация между вкладками
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'chugur_data_updated') {
+                // Перезагружаем данные
+                const savedUsers = localStorage.getItem(STORAGE_KEYS.USERS);
+                const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
+                const savedMessages = localStorage.getItem(STORAGE_KEYS.MESSAGES);
+                
+                if (savedUsers) users = JSON.parse(savedUsers);
+                if (savedPosts) posts = JSON.parse(savedPosts);
+                if (savedMessages) messages = JSON.parse(savedMessages);
+                
+                // Обновляем текущего пользователя
+                if (currentUser) {
+                    const updatedUser = users.find(u => u.id === currentUser.id);
+                    if (updatedUser) currentUser = updatedUser;
+                }
+                
+                // Обновляем интерфейс
+                refreshCurrentView();
+            }
+        });
 
         // ========== АУТЕНТИФИКАЦИЯ ==========
         function renderAuth() {
@@ -661,7 +715,7 @@
             
             if (user) {
                 currentUser = JSON.parse(JSON.stringify(user));
-                localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
+                localStorage.setItem('chugur_current_user_v2', JSON.stringify(currentUser));
                 startApp();
             } else {
                 alert('❌ Неверный username или пароль');
@@ -700,14 +754,14 @@
             users.push(newUser);
             saveData();
             currentUser = newUser;
-            localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('chugur_current_user_v2', JSON.stringify(currentUser));
             startApp();
-            alert('✅ Аккаунт создан! Теперь вы можете найти себя по username: ' + username);
+            alert('✅ Аккаунт создан! Теперь вас могут найти по username: ' + username);
         }
 
         function logout() {
             currentUser = null;
-            localStorage.removeItem('chugur_current_user');
+            localStorage.removeItem('chugur_current_user_v2');
             if (updateInterval) clearInterval(updateInterval);
             renderAuth();
         }
@@ -778,7 +832,7 @@
             }
         }
 
-        // ========== СООБЩЕНИЯ ==========
+        // ========== СООБЩЕНИЯ (С АВТОМАТИЧЕСКИМ ДОБАВЛЕНИЕМ ДИАЛОГА) ==========
         let chatImageData = null;
 
         function sendMessage() {
@@ -791,9 +845,14 @@
                 id: Date.now().toString(),
                 fromId: currentUser.id,
                 toId: currentChatUser.id,
+                fromName: currentUser.name,
+                fromUsername: currentUser.username,
+                toName: currentChatUser.name,
+                toUsername: currentChatUser.username,
                 text: text,
                 image: chatImageData || '',
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                read: false
             };
             
             messages.push(message);
@@ -807,6 +866,24 @@
                 preview.innerHTML = '';
             }
             renderChat();
+            
+            // Показываем уведомление о новом сообщении (если нужно)
+            updateMessageBadge();
+        }
+
+        function updateMessageBadge() {
+            const unreadCount = messages.filter(m => m.toId === currentUser?.id && !m.read).length;
+            const msgBtn = document.querySelector('.nav-item:nth-child(2)');
+            if (msgBtn) {
+                const oldBadge = msgBtn.querySelector('.badge');
+                if (oldBadge) oldBadge.remove();
+                if (unreadCount > 0) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge';
+                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    msgBtn.appendChild(badge);
+                }
+            }
         }
 
         function handleChatImage(e) {
@@ -839,6 +916,21 @@
             ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
+        // Помечаем сообщения как прочитанные
+        function markMessagesAsRead() {
+            let updated = false;
+            messages.forEach(m => {
+                if (m.toId === currentUser.id && m.fromId === currentChatUser.id && !m.read) {
+                    m.read = true;
+                    updated = true;
+                }
+            });
+            if (updated) {
+                saveData();
+                updateMessageBadge();
+            }
+        }
+
         function renderChat() {
             document.getElementById('headerBtn').style.display = 'none';
             const header = document.getElementById('header');
@@ -852,6 +944,9 @@
             header.insertBefore(backBtn, header.firstChild);
             
             const chatMsgs = getChatMessages();
+            
+            // Помечаем сообщения как прочитанные
+            markMessagesAsRead();
             
             document.getElementById('mainContent').innerHTML = `
                 <div class="chat-container">
@@ -893,21 +988,32 @@
             const oldBack = document.querySelector('.back-btn');
             if (oldBack) oldBack.remove();
             
-            const dialogs = [];
-            users.forEach(user => {
-                if (user.id !== currentUser.id) {
-                    const userMessages = messages.filter(m => 
-                        (m.fromId === currentUser.id && m.toId === user.id) ||
-                        (m.fromId === user.id && m.toId === currentUser.id)
-                    );
-                    if (userMessages.length > 0) {
-                        const lastMsg = userMessages.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
-                        dialogs.push({ user, lastMsg });
+            // Получаем все диалоги (уникальные чаты)
+            const dialogsMap = new Map();
+            
+            messages.forEach(msg => {
+                const otherId = msg.fromId === currentUser.id ? msg.toId : msg.fromId;
+                if (otherId !== currentUser.id && !dialogsMap.has(otherId)) {
+                    const otherUser = users.find(u => u.id === otherId);
+                    if (otherUser) {
+                        // Находим последнее сообщение с этим пользователем
+                        const userMessages = messages.filter(m => 
+                            (m.fromId === currentUser.id && m.toId === otherId) ||
+                            (m.fromId === otherId && m.toId === currentUser.id)
+                        ).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                        
+                        dialogsMap.set(otherId, {
+                            user: otherUser,
+                            lastMsg: userMessages[0],
+                            unread: messages.filter(m => m.fromId === otherId && m.toId === currentUser.id && !m.read).length
+                        });
                     }
                 }
             });
             
-            dialogs.sort((a,b) => new Date(b.lastMsg.timestamp) - new Date(a.lastMsg.timestamp));
+            const dialogs = Array.from(dialogsMap.values()).sort((a,b) => 
+                new Date(b.lastMsg.timestamp) - new Date(a.lastMsg.timestamp)
+            );
             
             document.getElementById('mainContent').innerHTML = `
                 <div class="content">
@@ -917,7 +1023,7 @@
                             <div class="user-item" onclick="openChat('${d.user.id}')">
                                 <img class="user-item-avatar" src="${d.user.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(d.user.name)}`}">
                                 <div class="user-item-info">
-                                    <div class="user-item-name">${escapeHtml(d.user.name)}</div>
+                                    <div class="user-item-name">${escapeHtml(d.user.name)} ${d.unread > 0 ? `<span style="background:#ff6b6b; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:5px;">${d.unread}</span>` : ''}</div>
                                     <div class="user-item-username">@${escapeHtml(d.user.username)}</div>
                                     <div style="font-size:12px; opacity:0.6;">${d.lastMsg.text ? (d.lastMsg.text.length > 30 ? d.lastMsg.text.slice(0,30)+'...' : d.lastMsg.text) : '📷 Фото'}</div>
                                 </div>
@@ -930,6 +1036,7 @@
             
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.nav-item')[1]?.classList.add('active');
+            updateMessageBadge();
         }
 
         function openChat(userId) {
@@ -1044,7 +1151,7 @@
             const idx = users.findIndex(u => u.id === currentUser.id);
             if (idx !== -1) users[idx] = currentUser;
             saveData();
-            localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('chugur_current_user_v2', JSON.stringify(currentUser));
             showProfile();
         }
 
@@ -1107,14 +1214,6 @@
             return div;
         }
 
-        function startChatFromPost(userId) {
-            const user = users.find(u => u.id === userId);
-            if (user && user.id !== currentUser.id) {
-                currentChatUser = user;
-                renderChat();
-            }
-        }
-
         function goHome() {
             if (currentChatUser) {
                 currentChatUser = null;
@@ -1130,6 +1229,7 @@
             else if (currentView === 'search') { const input = document.getElementById('searchInput'); if (input && input.value) searchUsers(); }
             else if (currentView === 'profile') showProfile();
             else if (currentChatUser) renderChat();
+            updateMessageBadge();
         }
 
         function formatDate(date) {
@@ -1152,12 +1252,16 @@
             document.getElementById('authContainer').style.display = 'none';
             renderFeed();
             if (updateInterval) clearInterval(updateInterval);
-            updateInterval = setInterval(() => { if (currentView === 'feed') renderFeed(); }, 20000);
+            updateInterval = setInterval(() => { 
+                if (currentView === 'feed') renderFeed();
+                updateMessageBadge();
+            }, 20000);
+            updateMessageBadge();
         }
 
         // ========== ЗАПУСК ==========
         loadData();
-        const savedUser = localStorage.getItem('chugur_current_user');
+        const savedUser = localStorage.getItem('chugur_current_user_v2');
         if (savedUser) {
             const parsed = JSON.parse(savedUser);
             currentUser = users.find(u => u.id === parsed.id);
