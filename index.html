@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Chugur | Социальная сеть</title>
+    <title>Chugur | Социальная сеть с сообщениями</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -15,22 +15,19 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: #0a0a0f;
             color: #fff;
-            overflow-x: hidden;
         }
 
         .app {
             max-width: 100%;
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            position: relative;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
             padding-bottom: 70px;
         }
 
-        /* Header */
         .header {
-            background: rgba(15, 12, 41, 0.95);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(20px);
             padding: 15px 20px;
             position: sticky;
@@ -43,16 +40,16 @@
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 800;
             background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
-        .refresh-btn {
+        .refresh-btn, .back-btn {
             background: rgba(255,255,255,0.1);
             border: none;
             font-size: 20px;
@@ -60,23 +57,14 @@
             padding: 8px 12px;
             border-radius: 30px;
             color: #fff;
-            transition: all 0.3s;
         }
 
-        .refresh-btn:active {
-            transform: rotate(180deg);
-        }
-
-        /* Контент */
         .content {
             padding: 20px;
-            padding-bottom: 80px;
         }
 
-        /* Форма создания поста */
         .create-post {
             background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 20px;
@@ -142,11 +130,6 @@
             border-radius: 30px;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .file-label:active {
-            background: rgba(255,255,255,0.25);
         }
 
         .publish-btn {
@@ -158,17 +141,10 @@
             font-weight: 600;
             cursor: pointer;
             margin-left: auto;
-            transition: transform 0.2s;
         }
 
-        .publish-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Посты */
         .post-card {
             background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
             border-radius: 20px;
             margin-bottom: 16px;
             padding: 16px;
@@ -180,6 +156,7 @@
             display: flex;
             gap: 12px;
             margin-bottom: 12px;
+            cursor: pointer;
         }
 
         .post-avatar {
@@ -187,7 +164,6 @@
             height: 48px;
             border-radius: 50%;
             object-fit: cover;
-            cursor: pointer;
         }
 
         .post-info {
@@ -198,7 +174,6 @@
             font-weight: 600;
             font-size: 15px;
             margin-bottom: 4px;
-            cursor: pointer;
         }
 
         .post-time {
@@ -240,19 +215,8 @@
             gap: 5px;
             font-size: 14px;
             color: rgba(255,255,255,0.7);
-            transition: all 0.2s;
             padding: 5px 10px;
             border-radius: 20px;
-        }
-
-        .stat-btn:active {
-            background: rgba(255,255,255,0.1);
-            transform: scale(0.95);
-        }
-
-        /* Профиль */
-        .profile {
-            padding: 0;
         }
 
         .profile-header {
@@ -284,7 +248,7 @@
             margin-bottom: 15px;
         }
 
-        .edit-profile-btn {
+        .edit-profile-btn, .message-user-btn {
             background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             border: none;
             padding: 12px 24px;
@@ -292,7 +256,7 @@
             color: white;
             font-weight: 600;
             cursor: pointer;
-            font-size: 14px;
+            margin: 5px;
         }
 
         .profile-stats {
@@ -318,13 +282,12 @@
             opacity: 0.7;
         }
 
-        /* Нижнее меню */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 12, 41, 0.95);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
@@ -341,17 +304,11 @@
             padding: 8px;
             border-radius: 50%;
             color: rgba(255,255,255,0.6);
-            transition: all 0.2s;
             position: relative;
         }
 
         .nav-item.active {
             color: #ff6b6b;
-            transform: scale(1.1);
-        }
-
-        .nav-item:active {
-            transform: scale(0.95);
         }
 
         .badge {
@@ -366,7 +323,171 @@
             min-width: 18px;
         }
 
-        /* Аутентификация */
+        /* Поиск и чаты */
+        .search-container {
+            background: rgba(255,255,255,0.08);
+            border-radius: 30px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .user-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-item:active {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .user-item-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-item-info {
+            flex: 1;
+        }
+
+        .user-item-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .user-item-username {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        /* Чат */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 120px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            background: rgba(255,255,255,0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .message-text {
+            font-size: 14px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .chat-input-container {
+            background: rgba(255,255,255,0.08);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            padding: 12px 15px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-send-btn {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .chat-image-label {
+            background: rgba(255,255,255,0.15);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
         .auth-section {
             display: flex;
             justify-content: center;
@@ -383,7 +504,6 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
-            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .auth-input {
@@ -395,10 +515,6 @@
             border-radius: 30px;
             font-size: 16px;
             color: #fff;
-        }
-
-        .auth-input::placeholder {
-            color: rgba(255,255,255,0.5);
         }
 
         .auth-btn {
@@ -420,7 +536,6 @@
             cursor: pointer;
         }
 
-        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
@@ -445,73 +560,26 @@
             border-radius: 20px;
         }
 
-        /* Уведомления */
-        .notifications-panel {
-            background: rgba(15, 12, 41, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
-            max-height: 500px;
-            overflow-y: auto;
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            opacity: 0.7;
         }
 
-        .notification-item {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 14px;
-        }
-
-        /* Анимации */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Скролл */
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ff6b6b;
-            border-radius: 10px;
-        }
+        input[type="file"] { display: none; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="app" id="app">
-        <div class="header">
-            <div class="logo">Chugur</div>
-            <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
+    <div class="app">
+        <div class="header" id="header">
+            <div class="logo" onclick="goHome()">Chugur</div>
+            <button class="refresh-btn" id="headerBtn" onclick="refreshFeed()">🔄</button>
         </div>
 
         <div id="authContainer"></div>
@@ -519,125 +587,63 @@
 
         <div class="bottom-nav" id="bottomNav" style="display: none;">
             <button class="nav-item" onclick="showFeed()">🏠</button>
-            <button class="nav-item" onclick="showNotifications()">🔔</button>
+            <button class="nav-item" onclick="showMessages()">💬</button>
+            <button class="nav-item" onclick="showSearch()">🔍</button>
             <button class="nav-item" onclick="showProfile()">👤</button>
         </div>
     </div>
 
     <div id="imageModal" class="modal" onclick="closeModal()">
-        <div class="modal-content">
-            <img id="modalImage" src="">
-        </div>
+        <div class="modal-content"><img id="modalImage" src=""></div>
     </div>
 
     <script>
-        // ========== ГЛОБАЛЬНЫЕ ДАННЫЕ ==========
+        // ========== ДАННЫЕ ==========
         let currentUser = null;
         let users = [];
         let posts = [];
-        let notifications = [];
+        let messages = [];
+        let currentChatUser = null;
         let currentView = 'feed';
-        let autoUpdateInterval = null;
-        let lastUpdateTime = Date.now();
+        let updateInterval = null;
 
-        // ========== ИНИЦИАЛИЗАЦИЯ ==========
-        function initData() {
+        // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
+        function loadData() {
             const savedUsers = localStorage.getItem('chugur_users');
             const savedPosts = localStorage.getItem('chugur_posts');
-            const savedNotifications = localStorage.getItem('chugur_notifications');
+            const savedMessages = localStorage.getItem('chugur_messages');
             
-            if (savedUsers) {
-                users = JSON.parse(savedUsers);
-            } else {
-                users = [];
-            }
+            if (savedUsers) users = JSON.parse(savedUsers);
+            else users = [];
             
-            if (savedPosts) {
-                posts = JSON.parse(savedPosts);
-            } else {
-                posts = [];
-            }
+            if (savedPosts) posts = JSON.parse(savedPosts);
+            else posts = [];
             
-            if (savedNotifications) {
-                notifications = JSON.parse(savedNotifications);
-            } else {
-                notifications = [];
-            }
-            
-            updateStats();
+            if (savedMessages) messages = JSON.parse(savedMessages);
+            else messages = [];
         }
 
         function saveData() {
             localStorage.setItem('chugur_users', JSON.stringify(users));
             localStorage.setItem('chugur_posts', JSON.stringify(posts));
-            localStorage.setItem('chugur_notifications', JSON.stringify(notifications));
-            updateStats();
+            localStorage.setItem('chugur_messages', JSON.stringify(messages));
         }
 
-        function updateStats() {
-            users.forEach(user => {
-                user.postsCount = posts.filter(p => p.userId === user.id).length;
-            });
-        }
-
-        function addNotification(userId, type, fromUserId, postId = null) {
-            const fromUser = users.find(u => u.id === fromUserId);
-            if (!fromUser || userId === fromUserId) return;
-            
-            const notification = {
-                id: Date.now().toString(),
-                userId: userId,
-                type: type,
-                fromUserName: fromUser.name,
-                fromUserAvatar: fromUser.avatar || '',
-                postId: postId,
-                createdAt: new Date().toISOString(),
-                read: false
-            };
-            
-            notifications.unshift(notification);
-            saveData();
-            updateNotificationBadge();
-        }
-
-        function updateNotificationBadge() {
-            const unreadCount = notifications.filter(n => n.userId === currentUser?.id && !n.read).length;
-            const notifBtn = document.querySelector('.nav-item:nth-child(2)');
-            if (notifBtn) {
-                const existingBadge = notifBtn.querySelector('.badge');
-                if (unreadCount > 0) {
-                    if (existingBadge) {
-                        existingBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-                    } else {
-                        const badge = document.createElement('span');
-                        badge.className = 'badge';
-                        badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-                        notifBtn.appendChild(badge);
-                    }
-                } else if (existingBadge) {
-                    existingBadge.remove();
-                }
-            }
-        }
-
-        // ========== АУТЕНТИФИКАЦИЯ (ФИКС) ==========
+        // ========== АУТЕНТИФИКАЦИЯ ==========
         function renderAuth() {
             document.getElementById('bottomNav').style.display = 'none';
             const container = document.getElementById('authContainer');
-            const mainContent = document.getElementById('mainContent');
-            
             container.style.display = 'block';
-            mainContent.innerHTML = '';
+            document.getElementById('mainContent').innerHTML = '';
             
             container.innerHTML = `
                 <div class="auth-section">
                     <div class="auth-card">
                         <h2 style="margin-bottom: 20px;">Chugur</h2>
-                        <p style="margin-bottom: 20px; opacity: 0.8;">Войдите в свою социальную сеть</p>
                         <input type="text" id="loginUsername" class="auth-input" placeholder="Имя пользователя">
                         <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
                         <button class="auth-btn" onclick="login()">Войти</button>
-                        <div class="switch-auth" onclick="showRegister()">Нет аккаунта? Зарегистрироваться</div>
+                        <div class="switch-auth" onclick="showRegister()">Нет аккаунта? Регистрация</div>
                     </div>
                 </div>
             `;
@@ -662,16 +668,14 @@
         function login() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
             const user = users.find(u => u.username === username && u.password === password);
             
             if (user) {
                 currentUser = JSON.parse(JSON.stringify(user));
                 localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
-                renderApp();
-                showToast('Добро пожаловать в Chugur!');
+                startApp();
             } else {
-                alert('Неверное имя пользователя или пароль');
+                alert('Неверное имя или пароль');
             }
         }
 
@@ -680,15 +684,8 @@
             const password = document.getElementById('regPassword').value;
             const name = document.getElementById('regName').value.trim();
             
-            if (!username || !password) {
-                alert('Заполните все поля');
-                return;
-            }
-            
-            if (users.find(u => u.username === username)) {
-                alert('Пользователь уже существует');
-                return;
-            }
+            if (!username || !password) { alert('Заполните все поля'); return; }
+            if (users.find(u => u.username === username)) { alert('Пользователь уже существует'); return; }
             
             const newUser = {
                 id: Date.now().toString(),
@@ -696,30 +693,24 @@
                 password: password,
                 name: name || username,
                 avatar: '',
-                bio: 'Новый пользователь Chugur',
-                postsCount: 0,
-                followers: [],
-                following: []
+                bio: 'Новый пользователь Chugur'
             };
             
             users.push(newUser);
             saveData();
-            
             currentUser = newUser;
             localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
-            renderApp();
-            showToast('Регистрация успешна!');
+            startApp();
         }
 
         function logout() {
             currentUser = null;
             localStorage.removeItem('chugur_current_user');
-            if (autoUpdateInterval) clearInterval(autoUpdateInterval);
+            if (updateInterval) clearInterval(updateInterval);
             renderAuth();
-            showToast('Вы вышли из аккаунта');
         }
 
-        // ========== СОЗДАНИЕ ПОСТА ==========
+        // ========== ПОСТЫ ==========
         let selectedImageData = null;
 
         function handleImageUpload(e) {
@@ -729,10 +720,7 @@
                 reader.onload = (event) => {
                     selectedImageData = event.target.result;
                     const preview = document.getElementById('imagePreview');
-                    preview.innerHTML = `
-                        <img src="${selectedImageData}" alt="preview">
-                        <button class="remove-image" onclick="removeImage()">✕</button>
-                    `;
+                    preview.innerHTML = `<img src="${selectedImageData}"><button class="remove-image" onclick="removeImage()">✕</button>`;
                     preview.style.display = 'block';
                 };
                 reader.readAsDataURL(file);
@@ -742,23 +730,14 @@
         function removeImage() {
             selectedImageData = null;
             const preview = document.getElementById('imagePreview');
-            if (preview) {
-                preview.style.display = 'none';
-                preview.innerHTML = '';
-            }
-            const input = document.getElementById('postImage');
-            if (input) input.value = '';
+            if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
         }
 
-        async function publishPost() {
+        function publishPost() {
             const text = document.getElementById('postText').value.trim();
+            if (!text && !selectedImageData) { alert('Напишите текст или добавьте фото'); return; }
             
-            if (!text && !selectedImageData) {
-                showToast('Напишите текст или добавьте фото', true);
-                return;
-            }
-            
-            const newPost = {
+            posts.unshift({
                 id: Date.now().toString(),
                 userId: currentUser.id,
                 userName: currentUser.name,
@@ -767,31 +746,305 @@
                 image: selectedImageData || '',
                 createdAt: new Date().toISOString(),
                 likes: []
-            };
+            });
             
-            posts.unshift(newPost);
             saveData();
-            
             document.getElementById('postText').value = '';
             removeImage();
+            if (currentView === 'feed') renderFeed();
+        }
+
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                const idx = post.likes.indexOf(currentUser.id);
+                if (idx === -1) post.likes.push(currentUser.id);
+                else post.likes.splice(idx, 1);
+                saveData();
+                if (currentView === 'feed') renderFeed();
+                else if (currentView === 'profile') showProfile();
+            }
+        }
+
+        function deletePost(postId) {
+            if (confirm('Удалить пост?')) {
+                posts = posts.filter(p => p.id !== postId);
+                saveData();
+                if (currentView === 'feed') renderFeed();
+                else if (currentView === 'profile') showProfile();
+            }
+        }
+
+        // ========== СООБЩЕНИЯ ==========
+        let chatImageData = null;
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
             
-            if (currentView === 'feed') {
-                renderFeed();
-            } else if (currentView === 'profile') {
-                renderProfile();
+            if (!text && !chatImageData) return;
+            
+            const message = {
+                id: Date.now().toString(),
+                fromId: currentUser.id,
+                toId: currentChatUser.id,
+                text: text,
+                image: chatImageData || '',
+                timestamp: new Date().toISOString()
+            };
+            
+            messages.push(message);
+            saveData();
+            
+            input.value = '';
+            chatImageData = null;
+            document.getElementById('chatImagePreview').style.display = 'none';
+            renderChat();
+        }
+
+        function handleChatImage(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    chatImageData = event.target.result;
+                    const preview = document.getElementById('chatImagePreview');
+                    preview.innerHTML = `<img src="${chatImageData}" style="max-width: 80px; border-radius: 8px;"><button onclick="removeChatImage()" style="background:red; border:none; border-radius:50%; width:20px;">✕</button>`;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeChatImage() {
+            chatImageData = null;
+            document.getElementById('chatImagePreview').style.display = 'none';
+            document.getElementById('chatImagePreview').innerHTML = '';
+        }
+
+        function getChatMessages() {
+            return messages.filter(m => 
+                (m.fromId === currentUser.id && m.toId === currentChatUser.id) ||
+                (m.fromId === currentChatUser.id && m.toId === currentUser.id)
+            ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        }
+
+        function renderChat() {
+            document.getElementById('headerBtn').style.display = 'none';
+            const header = document.getElementById('header');
+            const oldBack = document.querySelector('.back-btn');
+            if (oldBack) oldBack.remove();
+            
+            const backBtn = document.createElement('button');
+            backBtn.className = 'back-btn';
+            backBtn.innerHTML = '←';
+            backBtn.onclick = () => { currentChatUser = null; showMessages(); };
+            backBtn.style.cssText = 'background:rgba(255,255,255,0.1); border:none; font-size:24px; cursor:pointer; padding:8px 12px; border-radius:30px; color:#fff;';
+            header.insertBefore(backBtn, header.firstChild);
+            
+            const chatMsgs = getChatMessages();
+            
+            document.getElementById('mainContent').innerHTML = `
+                <div class="chat-container">
+                    <div style="padding:15px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <strong>${escapeHtml(currentChatUser.name)}</strong> <span style="opacity:0.6;">@${escapeHtml(currentChatUser.username)}</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div id="chatImagePreview" style="padding:0 15px; display:none;"></div>
+                    <div class="chat-input-container">
+                        <label class="chat-image-label" for="chatImage">📷</label>
+                        <input type="file" id="chatImage" accept="image/*" onchange="handleChatImage(event)">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="Сообщение...">
+                        <button class="chat-send-btn" onclick="sendMessage()">➤</button>
+                    </div>
+                </div>
+            `;
+            
+            const messagesContainer = document.getElementById('chatMessages');
+            chatMsgs.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.fromId === currentUser.id ? 'sent' : 'received'}`;
+                div.innerHTML = `
+                    ${msg.text ? `<div class="message-text">${escapeHtml(msg.text)}</div>` : ''}
+                    ${msg.image ? `<img class="message-image" src="${msg.image}" onclick="openModal('${msg.image}')">` : ''}
+                    <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString().slice(0,5)}</div>
+                `;
+                messagesContainer.appendChild(div);
+            });
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        }
+
+        function showMessages() {
+            currentView = 'messages';
+            currentChatUser = null;
+            document.getElementById('headerBtn').style.display = 'flex';
+            const oldBack = document.querySelector('.back-btn');
+            if (oldBack) oldBack.remove();
+            
+            const userMessages = [];
+            users.forEach(user => {
+                if (user.id !== currentUser.id) {
+                    const lastMsg = [...messages].filter(m => 
+                        (m.fromId === currentUser.id && m.toId === user.id) ||
+                        (m.fromId === user.id && m.toId === currentUser.id)
+                    ).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
+                    
+                    if (lastMsg) {
+                        userMessages.push({ user, lastMsg });
+                    }
+                }
+            });
+            
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content">
+                    <h3 style="margin-bottom: 15px;">💬 Сообщения</h3>
+                    <div class="user-list" id="chatList">
+                        ${userMessages.map(um => `
+                            <div class="user-item" onclick="openChat('${um.user.id}')">
+                                <img class="user-item-avatar" src="${um.user.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(um.user.name)}`}">
+                                <div class="user-item-info">
+                                    <div class="user-item-name">${escapeHtml(um.user.name)}</div>
+                                    <div class="user-item-username">@${escapeHtml(um.user.username)}</div>
+                                    <div style="font-size:12px; opacity:0.6;">${um.lastMsg.text ? um.lastMsg.text.slice(0,30) : '📷 Фото'}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${userMessages.length === 0 ? '<div class="empty-state">💬 Нет сообщений. Напишите кому-нибудь!</div>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-item')[1]?.classList.add('active');
+        }
+
+        function openChat(userId) {
+            currentChatUser = users.find(u => u.id === userId);
+            if (currentChatUser) renderChat();
+        }
+
+        // ========== ПОИСК ==========
+        function showSearch() {
+            currentView = 'search';
+            document.getElementById('headerBtn').style.display = 'flex';
+            const oldBack = document.querySelector('.back-btn');
+            if (oldBack) oldBack.remove();
+            
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content">
+                    <h3 style="margin-bottom: 15px;">🔍 Поиск пользователей</h3>
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Введите имя или username...">
+                        <button class="search-btn" onclick="searchUsers()">Найти</button>
+                    </div>
+                    <div id="searchResults" class="user-list"></div>
+                </div>
+            `;
+            
+            document.getElementById('searchInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') searchUsers(); });
+            
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-item')[2]?.classList.add('active');
+        }
+
+        function searchUsers() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!query) return;
+            
+            const results = users.filter(u => 
+                u.id !== currentUser.id && 
+                (u.name.toLowerCase().includes(query) || u.username.toLowerCase().includes(query))
+            );
+            
+            const container = document.getElementById('searchResults');
+            if (results.length === 0) {
+                container.innerHTML = '<div class="empty-state">😢 Пользователи не найдены</div>';
+            } else {
+                container.innerHTML = results.map(u => `
+                    <div class="user-item" onclick="startChat('${u.id}')">
+                        <img class="user-item-avatar" src="${u.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(u.name)}`}">
+                        <div class="user-item-info">
+                            <div class="user-item-name">${escapeHtml(u.name)}</div>
+                            <div class="user-item-username">@${escapeHtml(u.username)}</div>
+                            <button class="edit-profile-btn" style="margin-top:5px; padding:5px 15px; font-size:12px;" onclick="event.stopPropagation(); startChat('${u.id}')">💬 Написать</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function startChat(userId) {
+            currentChatUser = users.find(u => u.id === userId);
+            if (currentChatUser) renderChat();
+        }
+
+        // ========== ПРОФИЛЬ ==========
+        function showProfile() {
+            currentView = 'profile';
+            document.getElementById('headerBtn').style.display = 'flex';
+            const oldBack = document.querySelector('.back-btn');
+            if (oldBack) oldBack.remove();
+            
+            const userPosts = posts.filter(p => p.userId === currentUser.id).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content">
+                    <div class="profile">
+                        <div class="profile-header">
+                            <img class="profile-avatar" src="${currentUser.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=100&name=${encodeURIComponent(currentUser.name)}`}">
+                            <div class="profile-name">${escapeHtml(currentUser.name)}</div>
+                            <div class="profile-bio">${escapeHtml(currentUser.bio)}</div>
+                            <button class="edit-profile-btn" onclick="editProfile()">✏️ Редактировать</button>
+                            <button class="message-user-btn" onclick="logout()">🚪 Выйти</button>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat"><div class="stat-number">${userPosts.length}</div><div class="stat-label">Постов</div></div>
+                            <div class="stat"><div class="stat-number">${messages.filter(m => m.fromId === currentUser.id).length}</div><div class="stat-label">Сообщений</div></div>
+                        </div>
+                        <div id="profilePosts"></div>
+                    </div>
+                </div>
+            `;
+            
+            const postsContainer = document.getElementById('profilePosts');
+            if (userPosts.length === 0) {
+                postsContainer.innerHTML = '<div class="empty-state">📝 У вас пока нет постов</div>';
+            } else {
+                userPosts.forEach(post => postsContainer.appendChild(createPostElement(post)));
             }
             
-            showToast('Пост опубликован!');
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-item')[3]?.classList.add('active');
+        }
+
+        function editProfile() {
+            const newName = prompt('Новое имя:', currentUser.name);
+            const newBio = prompt('О себе:', currentUser.bio);
+            const newAvatar = prompt('Ссылка на фото (оставьте пустым):', currentUser.avatar);
+            
+            if (newName) currentUser.name = newName;
+            if (newBio) currentUser.bio = newBio;
+            if (newAvatar) currentUser.avatar = newAvatar;
+            
+            const idx = users.findIndex(u => u.id === currentUser.id);
+            if (idx !== -1) users[idx] = currentUser;
+            saveData();
+            localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
+            showProfile();
         }
 
         // ========== ЛЕНТА ==========
         function renderFeed() {
             currentView = 'feed';
-            const container = document.getElementById('mainContent');
+            document.getElementById('headerBtn').style.display = 'flex';
+            const oldBack = document.querySelector('.back-btn');
+            if (oldBack) oldBack.remove();
             
-            const feedPosts = [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const sortedPosts = [...posts].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
             
-            container.innerHTML = `
+            document.getElementById('mainContent').innerHTML = `
                 <div class="content">
                     <div class="create-post">
                         <textarea id="postText" class="post-textarea" rows="3" placeholder="Что нового?"></textarea>
@@ -807,12 +1060,10 @@
             `;
             
             const feedContainer = document.getElementById('feedContainer');
-            if (feedPosts.length === 0) {
-                feedContainer.innerHTML = '<div style="text-align: center; padding: 60px; opacity: 0.7;">😢 Пока нет постов. Будь первым!</div>';
+            if (sortedPosts.length === 0) {
+                feedContainer.innerHTML = '<div class="empty-state">😢 Нет постов. Будьте первым!</div>';
             } else {
-                feedPosts.forEach(post => {
-                    feedContainer.appendChild(createPostElement(post));
-                });
+                sortedPosts.forEach(post => feedContainer.appendChild(createPostElement(post)));
             }
             
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
@@ -822,271 +1073,86 @@
         function createPostElement(post) {
             const div = document.createElement('div');
             div.className = 'post-card';
-            
-            const postDate = new Date(post.createdAt);
-            const timeAgo = getTimeAgo(postDate);
             const isLiked = post.likes.includes(currentUser.id);
             
             div.innerHTML = `
-                <div class="post-header">
-                    <img class="post-avatar" src="${post.userAvatar}" alt="avatar" onclick="viewUserProfile('${post.userId}')">
+                <div class="post-header" onclick="viewUserProfile('${post.userId}')">
+                    <img class="post-avatar" src="${post.userAvatar}">
                     <div class="post-info">
-                        <div class="post-name" onclick="viewUserProfile('${post.userId}')">${escapeHtml(post.userName)}</div>
-                        <div class="post-time">${timeAgo}</div>
+                        <div class="post-name">${escapeHtml(post.userName)}</div>
+                        <div class="post-time">${formatDate(new Date(post.createdAt))}</div>
                     </div>
                 </div>
                 <div class="post-text">${escapeHtml(post.text)}</div>
-                ${post.image ? `<img class="post-image" src="${post.image}" alt="post" onclick="openModal('${post.image}')">` : ''}
+                ${post.image ? `<img class="post-image" src="${post.image}" onclick="openModal('${post.image}')">` : ''}
                 <div class="post-stats">
-                    <button class="stat-btn" onclick="toggleLike('${post.id}')">
-                        ${isLiked ? '❤️' : '🤍'} ${post.likes.length > 0 ? post.likes.length : ''}
-                    </button>
-                    <button class="stat-btn" onclick="deletePost('${post.id}')" ${post.userId !== currentUser.id ? 'style="display:none"' : ''}>
-                        🗑️ Удалить
-                    </button>
+                    <button class="stat-btn" onclick="toggleLike('${post.id}')">${isLiked ? '❤️' : '🤍'} ${post.likes.length || ''}</button>
+                    ${post.userId === currentUser.id ? `<button class="stat-btn" onclick="deletePost('${post.id}')">🗑️</button>` : ''}
+                    <button class="stat-btn" onclick="startChatFromPost('${post.userId}')">💬</button>
                 </div>
             `;
-            
             return div;
         }
 
-        function toggleLike(postId) {
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                const index = post.likes.indexOf(currentUser.id);
-                if (index === -1) {
-                    post.likes.push(currentUser.id);
-                    addNotification(post.userId, 'like', currentUser.id, postId);
-                } else {
-                    post.likes.splice(index, 1);
-                }
-                saveData();
-                refreshCurrentView();
-                showToast(index === -1 ? '❤️ Лайк поставлен' : '💔 Лайк убран');
+        function startChatFromPost(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user && user.id !== currentUser.id) {
+                currentChatUser = user;
+                renderChat();
             }
-        }
-
-        function deletePost(postId) {
-            if (confirm('Удалить пост?')) {
-                posts = posts.filter(p => p.id !== postId);
-                saveData();
-                refreshCurrentView();
-                showToast('Пост удален');
-            }
-        }
-
-        // ========== ПРОФИЛЬ (С УДОБНЫМ РЕДАКТИРОВАНИЕМ) ==========
-        function renderProfile() {
-            currentView = 'profile';
-            const container = document.getElementById('mainContent');
-            const userPosts = posts.filter(p => p.userId === currentUser.id).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
-            container.innerHTML = `
-                <div class="content">
-                    <div class="profile">
-                        <div class="profile-header">
-                            <img class="profile-avatar" id="profileAvatar" src="${currentUser.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=100&name=${encodeURIComponent(currentUser.name)}`}" alt="avatar">
-                            <div class="profile-name" id="profileName">${escapeHtml(currentUser.name)}</div>
-                            <div class="profile-bio" id="profileBio">${escapeHtml(currentUser.bio)}</div>
-                            <button class="edit-profile-btn" onclick="editProfileModal()">✏️ Редактировать профиль</button>
-                        </div>
-                        <div class="profile-stats">
-                            <div class="stat">
-                                <div class="stat-number">${userPosts.length}</div>
-                                <div class="stat-label">Постов</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-number">${currentUser.followers?.length || 0}</div>
-                                <div class="stat-label">Подписчиков</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-number">${currentUser.following?.length || 0}</div>
-                                <div class="stat-label">Подписок</div>
-                            </div>
-                        </div>
-                        <div id="profilePosts"></div>
-                    </div>
-                </div>
-            `;
-            
-            const postsContainer = document.getElementById('profilePosts');
-            if (userPosts.length === 0) {
-                postsContainer.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7;">📝 У вас пока нет постов</div>';
-            } else {
-                userPosts.forEach(post => {
-                    postsContainer.appendChild(createPostElement(post));
-                });
-            }
-            
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.nav-item')[2]?.classList.add('active');
-        }
-
-        function editProfileModal() {
-            const newName = prompt('Введите новое имя:', currentUser.name);
-            const newBio = prompt('Расскажите о себе:', currentUser.bio);
-            const newAvatar = prompt('Ссылка на фото профиля (или оставьте пустым):', currentUser.avatar);
-            
-            if (newName) currentUser.name = newName;
-            if (newBio) currentUser.bio = newBio;
-            if (newAvatar) currentUser.avatar = newAvatar;
-            
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            if (userIndex !== -1) {
-                users[userIndex] = currentUser;
-                saveData();
-                localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
-            }
-            
-            renderProfile();
-            showToast('Профиль обновлен!');
-        }
-
-        // ========== УВЕДОМЛЕНИЯ ==========
-        function showNotifications() {
-            currentView = 'notifications';
-            const container = document.getElementById('mainContent');
-            const userNotifications = notifications.filter(n => n.userId === currentUser.id);
-            
-            userNotifications.forEach(n => n.read = true);
-            saveData();
-            updateNotificationBadge();
-            
-            container.innerHTML = `
-                <div class="content">
-                    <div class="notifications-panel">
-                        <h3 style="margin-bottom: 15px;">Уведомления</h3>
-                        ${userNotifications.length === 0 ? '<div style="text-align: center; padding: 40px; opacity: 0.7;">🔔 Нет уведомлений</div>' : 
-                            userNotifications.map(n => `
-                                <div class="notification-item">
-                                    ${n.type === 'like' ? '❤️' : '➕'} 
-                                    <strong>${escapeHtml(n.fromUserName)}</strong> 
-                                    ${n.type === 'like' ? 'лайкнул ваш пост' : 'подписался на вас'}
-                                    <div style="font-size: 11px; opacity: 0.5; margin-top: 5px;">${getTimeAgo(new Date(n.createdAt))}</div>
-                                </div>
-                            `).join('')
-                        }
-                    </div>
-                </div>
-            `;
-            
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.nav-item')[1]?.classList.add('active');
-        }
-
-        // ========== ОБНОВЛЕНИЯ ==========
-        function autoUpdate() {
-            const now = Date.now();
-            if (now - lastUpdateTime >= 20000) {
-                refreshCurrentView();
-                lastUpdateTime = now;
-                showToast('Лента обновлена', false);
-            }
-        }
-
-        function manualRefresh() {
-            refreshCurrentView();
-            showToast('Обновлено! 🔄');
-            lastUpdateTime = Date.now();
-        }
-
-        function refreshCurrentView() {
-            if (currentView === 'feed') {
-                renderFeed();
-            } else if (currentView === 'profile') {
-                renderProfile();
-            } else if (currentView === 'notifications') {
-                showNotifications();
-            }
-        }
-
-        // ========== ВСПОМОГАТЕЛЬНЫЕ ==========
-        function getTimeAgo(date) {
-            const now = new Date();
-            const diff = now - date;
-            const minutes = Math.floor(diff / 60000);
-            const hours = Math.floor(diff / 3600000);
-            const days = Math.floor(diff / 86400000);
-            
-            if (minutes < 1) return 'только что';
-            if (minutes < 60) return `${minutes} мин назад`;
-            if (hours < 24) return `${hours} ч назад`;
-            if (days < 7) return `${days} д назад`;
-            return date.toLocaleDateString();
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showToast(message, isError = false) {
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 80px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: ${isError ? '#ff6b6b' : '#4ecdc4'};
-                color: white;
-                padding: 10px 20px;
-                border-radius: 30px;
-                z-index: 1000;
-                font-size: 14px;
-                animation: slideUp 0.3s ease;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        }
-
-        function openModal(imageSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            modalImage.src = imageSrc;
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('imageModal').style.display = 'none';
-        }
-
-        function showFeed() {
-            renderFeed();
         }
 
         function viewUserProfile(userId) {
-            if (userId === currentUser.id) {
-                renderProfile();
+            if (userId === currentUser.id) showProfile();
+        }
+
+        function goHome() {
+            if (currentChatUser) {
+                currentChatUser = null;
+                showMessages();
             } else {
-                showToast(`👤 Профиль пользователя`);
+                showFeed();
             }
         }
 
-        function renderApp() {
+        function refreshFeed() {
+            if (currentView === 'feed') renderFeed();
+            else if (currentView === 'messages' && !currentChatUser) showMessages();
+            else if (currentView === 'search') searchUsers();
+            else if (currentView === 'profile') showProfile();
+        }
+
+        function formatDate(date) {
+            const now = new Date();
+            const diff = now - date;
+            const mins = Math.floor(diff/60000);
+            if (mins < 1) return 'только что';
+            if (mins < 60) return `${mins} мин`;
+            if (diff < 86400000) return `${Math.floor(mins/60)} ч`;
+            return `${Math.floor(diff/86400000)} д`;
+        }
+
+        function escapeHtml(text) { if (!text) return ''; return text.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+        function openModal(src) { document.getElementById('modalImage').src = src; document.getElementById('imageModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('imageModal').style.display = 'none'; }
+        function showFeed() { renderFeed(); }
+        
+        function startApp() {
             document.getElementById('bottomNav').style.display = 'flex';
             document.getElementById('authContainer').style.display = 'none';
             renderFeed();
-            if (autoUpdateInterval) clearInterval(autoUpdateInterval);
-            autoUpdateInterval = setInterval(autoUpdate, 20000);
-            updateNotificationBadge();
+            if (updateInterval) clearInterval(updateInterval);
+            updateInterval = setInterval(() => { if (currentView === 'feed') renderFeed(); }, 20000);
         }
 
         // ========== ЗАПУСК ==========
-        initData();
-        
+        loadData();
         const savedUser = localStorage.getItem('chugur_current_user');
         if (savedUser) {
-            const parsedUser = JSON.parse(savedUser);
-            currentUser = users.find(u => u.id === parsedUser.id);
-            if (currentUser) {
-                renderApp();
-            } else {
-                renderAuth();
-            }
+            const parsed = JSON.parse(savedUser);
+            currentUser = users.find(u => u.id === parsed.id);
+            if (currentUser) startApp();
+            else renderAuth();
         } else {
             renderAuth();
         }
